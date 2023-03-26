@@ -50,3 +50,10 @@ This project corresponds to sections 7 and 8 of [A Wi-Fi Switch for Domoticz usi
 This third project is project 2 but with a different hardware abstraction layer. It can handle three types of temperature and humidity sensors and two types of light level sensors. Additionally, a temperature and humidity sensor can be emulated and the same is possible with the light level sensor. Finally, a rolling average of the light level measurements can be enabled to smooth out fluctuations caused by clouds or other passing shadows. 
 
 This project corresponds to section 10 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html).
+
+
+## License
+
+Copyright 2023, Michel Deslierres. No rights reserved. 
+
+While the copyright pertaining to included libraries must be respected, all the code in this repository created by Michel Deslierres is in the public domain. In those jurisdictions where this may be a the [BSD Zero Clause License](https://spdx.org/licenses/0BSD.html) applies.
