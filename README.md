@@ -2,7 +2,7 @@
 
 XIAO ESP32C3 based Wi-Fi Switch
 
-**Source code that accompanies [A Wi-Fi Switch for Domoticz using XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)**
+**Source code that accompanies [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)**
 
 ## Overview of the Wi-Fi Switch
 
@@ -31,7 +31,7 @@ A future layer will include substitute parts for the sensors.
 
 In addition the firmware will include an asynchronous web server capable of handling multiple clients at the same time.
 
-This project corresponds to sections 1 to 6 of [A Wi-Fi Switch for Domoticz using XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html).
+This project corresponds to sections 1 to 6 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html).
 
 
 ### 02_basic_wifi_switch
@@ -42,11 +42,11 @@ Domoticz can be used to easily modify the behaviour of the Wi-Fi switch so that 
 
 The [lua](lua/) directory contains a dzVents Lua script that automatically adjusts the humidity status displayed for all Domoticz supported devices that measure temperature and humidity and optionally barometric pressure. 
 
-This project corresponds to sections 7 and 8 of [A Wi-Fi Switch for Domoticz using XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html).
+This project corresponds to sections 7 and 8 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html).
 
 
 ### 03_alt_wifi_switch
 
 This third project is project 2 but with a different hardware abstraction layer. It can handle three types of temperature and humidity sensors and two types of light level sensors. Additionally, a temperature and humidity sensor can be emulated and the same is possible with the light level sensor. Finally, a rolling average of the light level measurements can be enabled to smooth out fluctuations caused by clouds or other passing shadows. 
 
-This project corresponds to section 10 of [A Wi-Fi Switch for Domoticz using XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html).
+This project corresponds to section 10 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html).
