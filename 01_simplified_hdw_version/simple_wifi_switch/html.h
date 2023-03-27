@@ -54,7 +54,7 @@ const char html_404[] PROGMEM = R"rawliteral(
   </style>
 </head>
 <body>
-  <h1>%SERVERNAME%</h1>
+  <h1>%DEVICENAME%</h1>
   <p><b>404 Error</b></p>
   <p><form action='/' method='get'><button class="button">Return</button></form></p>
 </body>
