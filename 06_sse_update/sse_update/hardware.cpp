@@ -89,10 +89,6 @@ void readLight() {
     events.send(Light.c_str(),"lightvalue");       // updates all Web clients
   }
 }
-/*
-  //https://wiki.seeedstudio.com/XIAO_ESP32C3_Getting_Started/#check-the-battery-voltage
-  // About calibration
-*/
 
 void initHardware(void) {
   initLed();
