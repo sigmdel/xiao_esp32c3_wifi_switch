@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Arduino.h>  // pin definitions
+
 // The sensor data in main.cpp that the hardware will update - all strings
 extern String ledStatus;
 extern String Temperature;
@@ -9,7 +11,7 @@ extern String Light;
 // LED (or relay)
 #define LED_PIN    D10 // Grove LED Socket kit connected to XIAO female headers on XIAO Expansion base
 
-// push button
+// Push button
 #define BUTTON_PIN D1  // User button on XIAO Expansion base
 
 // Light sensor
