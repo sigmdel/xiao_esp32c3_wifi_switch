@@ -1,0 +1,6 @@
+#pragma once
+
+#define DOMOTICZ_URL   "<ip address of domoticz server>:<tcp port>"
+#define SWITCH_IDX     204
+#define LUX_IDX        205
+#define TEMP_HUMI_IDX  206
