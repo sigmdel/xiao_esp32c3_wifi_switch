@@ -9,7 +9,7 @@
 #include "ESPAsyncWebServer.h"
 #include "html.h"
 #include "secrets.h"
-#include "hardware2.h"
+#include "hardware.h"
 
 // logging tags
 #define TAG "MAIN"

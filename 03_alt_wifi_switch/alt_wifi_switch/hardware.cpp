@@ -2,7 +2,7 @@
 #include <esp32-hal-log.h>
 #include "mdSimpleButton.h"
 #include "domoticz.h"
-#include "hardware2.h"
+#include "hardware.h"
 
 
 // DHT sensor library and sanity check
