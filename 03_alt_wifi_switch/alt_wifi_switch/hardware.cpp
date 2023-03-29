@@ -53,6 +53,8 @@ void checkButton(void) {
       ESP_LOGI(TAG, "Push-button released");
       toggleLed();
       break;
+    default:   // avoid unhandled BUTTON_UNCHANGED warning/error 
+      break;  
   }
 }
 
