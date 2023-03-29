@@ -4,7 +4,7 @@
  * Web Interface for a Relay with Additional Sensors
  * integrate into Domoticz home automation
  *
- * Web update technology: Server-Sent Event (SSE)
+ * Web update technology: Server-Sent Events (SSE)
  *
  * Hardware: XIAO ESP32C3 with XIAO Starter Kit
  *
