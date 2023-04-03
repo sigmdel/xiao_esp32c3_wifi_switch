@@ -59,7 +59,7 @@ the remoteIP problem.
 
 
 #if (!PLATFORMIO)
-  // Enable Arduino-ESP32 logging in Arduino IDE
+  // Enable local Arduino-ESP32 logging in Arduino IDE
   #ifdef CORE_DEBUG_LEVEL
     #undef CORE_DEBUG_LEVEL
   #endif
@@ -68,7 +68,11 @@ the remoteIP problem.
   #endif
 
   #define CORE_DEBUG_LEVEL 5
-  #define LOG_LOCAL_LEVEL ESP_LOG_DEBUG
-  //https://esp32.com/viewtopic.php?t=5730#p70732
-  //View Esp Log With Arduino IDE
+  #define LOG_LOCAL_LEVEL CORE_DEBUG_LEVEL
+  //
+  // Use the Core Debug Level in the IDE Tools menu to 
+  // set which debug messages from the core are shown
+  //
+  // https://esp32.com/viewtopic.php?t=5730#p70732
+  // View Esp Log With Arduino IDE
 #endif
