@@ -1,0 +1,8 @@
+#pragma once
+
+#define DOMOTICZ_URL   "<ip address of domoticz server>:<tcp port>"
+#define SWITCH_IDX     204
+#define LUX_IDX        205
+#define TEMP_HUMI_IDX  206
+
+#define CONNECT_TIMEOUT 1000  // default HTTPCLIENT_DEFAULT_TCP_TIMEOUT = 5000 (5 seconds), must be set in multiples of 1000
