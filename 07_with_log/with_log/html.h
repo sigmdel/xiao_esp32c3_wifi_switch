@@ -187,7 +187,7 @@ const char html_console[] PROGMEM = R"rawliteral(
   <br/>
   <br/>
   <!-- form method='get' onsubmit='return l(1);' -->
-  <input id='cmd' placeholder='Enter command - NOT implement yet' autofocus>
+  <input id='cmd' placeholder='Enter command - NOT implemented yet' autofocus>
   <!-- /form -->
   <br/>
   <br/>
