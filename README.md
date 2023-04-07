@@ -85,15 +85,19 @@ Full Web page reloading using a refresh meta tag is replaced by asynchronous Ser
 
 This project will be described in an upcoming post [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html).
 
-### About the last 3 xxx_update projects
-
-It seems that [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html) is not about to be available in the near future, so a short explanation might be in order about these last three projects. They present 3 techniques that could be used to update the information displayed on the Web page without reloading the page itself as done in the first three projects. Tasmota uses AJAX, but Server-Sent Events will be used in further developments.
+> ### About the last 3 xxx_update projects
+>
+> It seems that [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html) is not about to be available in the near future, so a short explanation might be in order about these last three projects. They present 3 techniques that could be used to update the information displayed on the Web page without reloading the page itself as done in the first three projects. Tasmota uses AJAX, but Server-Sent Events will be used in further developments.
 
 ## 07_with_log
 
 Carrying on from `06_sse_update`, this version adds a *private* logging facility. It is implemented as a FIFO queue with replacement of older entries when adding a log message when the queue is already full. That way, it is possible to log messages in an interrupt service routine and even before the serial port is up. Actually sending log messages is done safely in the `loop()` thread. Started to remove blocking operations. There is no longer any waiting for the WiFi connection in `setup()`. Similarly failed initialization of the temperature sensor will no longer block the execution of the firmware. 
 
 There is still a problem with HTTP requests to a missing Domoticz server or to an incorrect address. Request will still block until a timeout is reached. Currently, the timeout is set at the lowest possible value (1 second), so firmware will not respond to the button during that time. The solution would seem to be to find an asynchronous HTTP request library or to make each request in a separate thread or task.
+
+## 08_ticker_hdw
+
+No luck so far with asynchronous HTTP request libraries. Tests of embedding a blocking HTTP request in a (RTOS) task are positive. However, if tasks are used for this, they should be used for everything else including button presses. Consequently, another approach is used: HTTP requests are buffered in a FIFO queue with replacement. This is the same technique as used with the log. To see how that works, ensure that the serial log level is set to LOG_DEBUG (recompile and upload the firmware if the level had to be changed), stop Domoticz, and press the button many times in quick succession. Quickly, the buffer will be filled and old requests will be dropped. Nevertheless, the LED will follow the state of the button. 
 
 ## License
 
