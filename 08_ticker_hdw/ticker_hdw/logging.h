@@ -3,19 +3,25 @@
 #include <Arduino.h>
 
 /*
- * Log priority levels "borrowed" from syslog
+   Syslog priority levels
+
+   LOG_EMERG = 0,      // system is unusable, index = 0 just to be sure
+   LOG_ALERT = 1,      // action must be taken immediately
+   LOG_CRIT = 2,       // critical conditions
+   LOG_ERR = 3,        // error conditions
+   LOG_WARNING = 4,    // warning conditions
+   LOG_NOTICE = 5,     // normal but significant condition
+   LOG_INFO = 6,       // informational
+   LOG_DEBUG = 7,      // debug-level messages
+
+   However only 3 will be used here
  */
 
 enum Log_level {
-   LOG_EMERG = 0,  /* system is unusable, index = 0 just to be sure*/
-   LOG_ALERT,      /* action must be taken immediately */
-   LOG_CRIT,       /* critical conditions */
-   LOG_ERR,        /* error conditions */
-   LOG_WARNING,    /* warning conditions */
-   LOG_NOTICE,     /* normal but significant condition */
-   LOG_INFO,       /* informational */
-   LOG_DEBUG,      /* debug-level messages */
-   LOG_LEVEL_COUNT /* number of log levels */
+   LOG_ERR = 0,    // error conditions
+   LOG_INFO,       // informational
+   LOG_DEBUG,      // debug-level messages
+   LOG_LEVEL_COUNT // number of log levels
 };
 
 extern bool wifiConnected;

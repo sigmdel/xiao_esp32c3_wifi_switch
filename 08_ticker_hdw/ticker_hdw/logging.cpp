@@ -27,14 +27,9 @@ extern config_t config;
 extern AsyncEventSource events;
 
 const char *logLevelString[LOG_LEVEL_COUNT] = {
-  "emerg",
-  "alert",
-  "crit",
-  "err",
-  "warning",
-  "notice",
-  "info",
-  "debug"
+  "ERR",  //"error"
+  "inf",  //"information"
+  "dbg",  //"debug"
 };
 
 const char *tagString[TAG_COUNT] = {
@@ -131,13 +126,16 @@ int sendLog(void) {
   char mxtime[15];
   mstostr(LogTime[tail], mxtime, sizeof(mxtime));
 
-  // message = "[tag]: logmessage";
-  String message = " [";
-  message += tagString[LogTag[tail]];
-  message += "]: ";
-  message += Log[tail];
 
   uint8_t level = LogLevel[tail];
+  //[ ] TODO refactor following - see logHistory()
+  // message = "[tag/lev]: logmessage";
+  String message = " ";
+  message += tagString[LogTag[tail]];
+  message += "/";
+  message += logLevelString[level];
+  message += ": ";
+  message += Log[tail];
 
   if ((level <= config.logLevelSyslog) && (wifiConnected))  {
     String msg = config.hostname + message;
@@ -183,11 +181,14 @@ String logHistory(void) {
     int j = (validcount < LOG_SIZE) ? 0 : head;
     for (int i=0; i<validcount; i++) {
       if (LogLevel[j] <= config.logLevelWeb) {
+        //[ ] TODO refactor following !
         mstostr(LogTime[j], mxtime, sizeof(mxtime));
         msg = String(mxtime);
-        msg += " [";
+        msg += " ";
         msg += tagString[LogTag[j]];
-        msg += "]: " + Log[j] + "\n";
+        msg += "/";
+        msg += logLevelString[LogLevel[j]];
+        msg += ": " + Log[j] + "\n";
         hist += msg;
       }
       j = (j+1) % LOG_SIZE;

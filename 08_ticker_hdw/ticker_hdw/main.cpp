@@ -2,7 +2,6 @@
 // Copyright: see ticker_hdw.ino
 // Libraries: see ticker_hdw.ino
 
-
 #include "arduino_config.h"  // done with build_flags in platformIO
 #include <Arduino.h>         // not needed in Arduino IDE
 #include <WiFi.h>
@@ -14,11 +13,8 @@
 #include "webserver.h"
 #include "domoticz.h"
 
-#define TEST_LOG
-
 #ifdef NO_TESTS
   // remove all test modules
-  #undef TEST_LOG
 #endif
 
 bool wifiConnected = false;
@@ -40,20 +36,6 @@ void WiFiModule(void) {
   }
 }
 
-#ifdef TEST_LOG
-// ---  testLogModule
-// Adds messages to log every 1/2 second to test logging
-unsigned long logtime = millis();
-uint32_t logcount = 0;
-void testLogModule(void) {
-  if (millis() - logtime > 500) {
-    addToLogf(LOG_INFO, TAG_SYSTEM, "loop messsage #%d", logcount);
-    logcount++;
-    logtime = millis();
-  }
-}
-#endif
-
 void setup() {
   addToLogPf(LOG_INFO, TAG_SYSTEM, PSTR("Firmware version %s"), FirmwareVersionToString().c_str());
   // need to add firmware version
@@ -71,10 +53,10 @@ void setup() {
   connectiontime = millis();
   #ifdef USE_SECRETS
   WiFi.begin(WIFI_SSID, WIFI_PSWD);
-  addToLogPf(LOG_CRIT, TAG_SYSTEM, PSTR("Attempting to connect to Wi-Fi network %s"), WIFI_SSID);
+  addToLogPf(LOG_INFO, TAG_SYSTEM, PSTR("Attempting to connect to Wi-Fi network %s"), WIFI_SSID);
   #else
   WiFi.begin();
-  addToLogP(LOG_CRIT, TAG_SYSTEM, PSTR("Attempting to connect to last used Wi-Fi network"));
+  addToLogP(LOG_INFO, TAG_SYSTEM, PSTR("Attempting to connect to last used Wi-Fi network"));
   #endif
   webserversetup();
   initHardware();
@@ -86,7 +68,4 @@ void loop() {
   sendRequest();
   sendLog();
   WiFiModule();
-  #ifdef TEST_LOG
-  testLogModule();
-  #endif
 }

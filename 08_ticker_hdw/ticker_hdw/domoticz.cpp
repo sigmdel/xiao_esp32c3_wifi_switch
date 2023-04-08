@@ -16,6 +16,7 @@ uint8_t urCount = 0;
 // Adds the given url to the URL circular buffer urlRing[]
 // This always succeeds, the oldest url in the queue will be
 // deleted if need be.
+// See sendRequest() for removal of entries from the buffer
 void addToRing(String url) {
   urlRing[urHead] = url;
   urHead = (urHead + 1) % RING_SIZE; // Advance urHead to the next slot in the ring buffer
@@ -23,11 +24,10 @@ void addToRing(String url) {
   if (urCount > RING_SIZE) {         // If more requests to be sent out than the size of the buffer
     urTail = urHead;                 // then move the urTail to the oldest message in the buffer
     urCount = RING_SIZE;             // Can't send out more messanges than the total number in the buffer
-    addToLogP(LOG_WARNING, TAG_DOMOTICZ, PSTR("Oldest queued request removed"));
+    addToLogP(LOG_INFO, TAG_DOMOTICZ, PSTR("Oldest queued request removed"));
   }
   //addToLogPf(LOG_DEBUG, TAG_DOMOTICZ, PSTR("urlRing count = %d"), urCount);  // let's see if ring buffer is used at all!
 }
-// see sendRequest() for the other end of this
 
 bool sendHttpRequest(String url) {
   if (WiFi.status() != WL_CONNECTED) {
@@ -68,8 +68,8 @@ int sendRequest(void) {
   // Ignore the result, errors or success is logged
   sendHttpRequest(urlRing[urTail]);
   // remove the log message from the ring buffer
-  urTail = (urTail + 1) % RING_SIZE;   // move the urTail to the next message to send
-  urCount--;                        // reduce the urCount of message to be sent
+  urTail = (urTail + 1) % RING_SIZE;  // move the urTail to the next message to send
+  urCount--;                          // reduce the count of messages yet to be sent
   return 1;
 }
 
