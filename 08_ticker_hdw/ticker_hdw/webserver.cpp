@@ -29,7 +29,7 @@ String processor(const String& var){
   if (var == "LIGHT") return Light;
   if (var == "LEDSTATUS") return ledStatus;
   if (var == "LOG") return logHistory();
-  if (var == "INFO") return String("Using AsyncWebServer and Server-Sent Events (SSE)");
+  if (var == "INFO") return String("Using AsyncWebServer, AJAX and Server-Sent Events (SSE)");
   return String(); // empty string
 }
 
@@ -38,30 +38,30 @@ void webserversetup(void) {
   // Setup async web browser
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    addToLogP(LOG_INFO, TAG_WEBSERVER, "Index page requested.");
+    addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /"));
     request->send_P(200, "text/html", html_index, processor);
   });
 
   server.on("/toggle", HTTP_GET, [](AsyncWebServerRequest *request){
-    addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("Web button pressed."));
+    addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /toggle"));
     toggleLed();
-    request->send_P(200, "text/html", html_index, processor); // updates the client making the request only
+    request->send_P(200, "text/plain", "OK");
   });
 
   server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
-    addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("Domoticz command on"));
+    addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /on"));
     setLed(1);
     request->send(200, "text/plain", "OK");
   });
 
   server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request){
-    addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("Domoticz command off"));
+    addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /off"));
     setLed(0);
     request->send(200, "text/plain", "OK");
   });
 
   server.on("/log", HTTP_GET, [](AsyncWebServerRequest *request){
-    addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("Web log page requested"));
+    addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /log"));
     request->send_P(200, "text/html", html_console, processor);
   });
 
