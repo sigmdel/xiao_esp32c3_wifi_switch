@@ -8,11 +8,11 @@
 #include "hardware.h"
 #include "domoticz.h"
 
-#define TEST_DHT_FAIL
+#define TEST_THS_FAIL
 
 #ifdef NO_TESTS
   // remove all test modules
-  #undef TEST_DHT_FAIL
+  #undef TEST_THS_FAIL
 #endif
 
 
@@ -59,11 +59,11 @@ void checkButton(void) {
   }
 }
 
-// DHT Sensor
+// Temperature and Humidity Sensor (THS)
 
 unsigned long temptime;
 
-#ifdef TEST_DHT_FAIL
+#ifdef TEST_THS_FAIL
 DFRobot_DHT20 dht20(&Wire, 0x43);
 #else
 DFRobot_DHT20 dht20;
