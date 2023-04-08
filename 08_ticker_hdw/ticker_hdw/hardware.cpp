@@ -26,7 +26,7 @@ void setLed(int value) {
   // tell everyone
   addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("LED now %s"), ledStatus);
   events.send(ledStatus.c_str(),"ledstate");  // updates all Web clients
-  updateDomoticzSwitch(SWITCH_IDX, value);
+  updateDomoticzSwitch(SWITCH_IDX, value);    // and Domoticz
 }
 
 void toggleLed(void) {
@@ -99,8 +99,8 @@ void readTemp(void) {
     addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Humidity %s --> %.1f"), Humidity.c_str(), 100*tah.humidity);
     Humidity = String(100*tah.humidity, 1);
     temptime = millis();
-    events.send(Temperature.c_str(),"tempvalue");                                               // updates all Web clients
-    events.send(Humidity.c_str(),"humdvalue");                                                  // updates all Web clients
+    events.send(Temperature.c_str(),"tempvalue");        // updates all Web clients
+    events.send(Humidity.c_str(),"humdvalue");           // and Domoticz
     updateDomoticzTemperatureHumiditySensor(TEMP_HUMI_IDX, tah.temperature, 100*tah.humidity);
   }
 }
@@ -123,7 +123,7 @@ void readLight() {
     Light = String(value);
     lighttime = millis();
     events.send(Light.c_str(),"lightvalue");       // updates all Web clients
-    updateDomoticzLightSensor(LUX_IDX, value);     // will slow reaction if Domoticz not on line
+    updateDomoticzLightSensor(LUX_IDX, value);     // and Domoticz
   }
 }
 
