@@ -150,7 +150,7 @@ int sendLog(void) {
 
   if (level <= config.logLevelUart) {
     Serial.printf("%s\n", message.c_str());
-    Serial.flush();
+    //Serial.flush(); don't do this - uart logging will be blocking, espcially if no serial connection
   }
 
   if (level <= config.logLevelWeb) {
