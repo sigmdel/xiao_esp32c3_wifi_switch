@@ -89,6 +89,16 @@ This project will be described in an upcoming post [A Wi-Fi Switch for Domoticz 
 >
 > It seems that [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html) is not about to be available in the near future, so a short explanation might be in order about these last three projects. They present 3 techniques that could be used to update the information displayed on the Web page without reloading the page itself as done in the first three projects. Tasmota uses AJAX, but Server-Sent Events will be used in further developments.
 
+<!-- 
+https://stackoverflow.com/questions/5195452/websockets-vs-server-sent-events-eventsource/5326159
+https://stackoverflow.com/questions/5195452/websockets-vs-server-sent-events-eventsource
+
+https://web.dev/eventsource-basics/
+Stream Updates with Server-Sent Events
+Nov 30, 2010
+Eric Bidelman
+-->
+
 ## 07_with_log
 
 Carrying on from `06_sse_update`, this version adds a *private* logging facility. It is implemented as a FIFO queue with replacement of older entries when adding a log message when the queue is already full. That way, it is possible to log messages in an interrupt service routine and even before the serial port is up. Actually sending log messages is done safely in the `loop()` thread. Started to remove blocking operations. There is no longer any waiting for the WiFi connection in `setup()`. Similarly failed initialization of the temperature sensor will no longer block the execution of the firmware. 
