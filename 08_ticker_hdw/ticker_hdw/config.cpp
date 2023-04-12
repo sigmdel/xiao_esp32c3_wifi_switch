@@ -20,8 +20,11 @@ void useDefaultConfig(void) {
 
   strlcpy(config.hostname, HOSTNAME, HOSTNAME_SZ);
 
-  strlcpy(config.syslogHost, SYSLOG_HOST, URL_SZ);
+  strlcpy(config.syslogHost, SYSLOG_HOST, IP_SZ);
   config.syslogPort = SYSLOG_PORT;
+
+  config.hdwPollTime = POLL_TIME;
+  config.sensorUpdtTime = SENSOR_DELAY;
 
   config.logLevelUart   = LOG_LEVEL_UART;
   config.logLevelSyslog = LOG_LEVEL_SYSLOG;

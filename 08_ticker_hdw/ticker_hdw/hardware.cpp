@@ -4,39 +4,52 @@
 #include "ESPAsyncWebServer.h"  // for AsyncEventSource
 #include "mdSimpleButton.h"
 #include "DFRobot_DHT20.h"      // modified
+#include "config.h"
 #include "logging.h"
 #include "hardware.h"
 #include "domoticz.h"
 
-#define TEST_THS_FAIL
+#define TEST_THS_FAIL  // assume THS failure is being tested
 
 #ifdef NO_TESTS
   // remove all test modules
   #undef TEST_THS_FAIL
 #endif
 
+// Relay (light)
+#define RELAY_PIN   D10 // Grove RELAY Socket kit connected to XIAO female headers on XIAO Expansion base
+
+// Push button
+#define BUTTON_PIN  D1  // User button on XIAO Expansion base
+
+// Brightness sensor
+#define LS_PIN      D0  //  connected to XIA0 Expansion base A0-D0 Grove connector
+
+// DHT20 uses the default I²C pins: SDA = D4 = 6 and SCL = D5 = 7
+
 
 extern AsyncEventSource events;
 
-// LED (i.e. relay)
+// Relay
 
-void setLed(int value) {
-  digitalWrite(LED_PIN, value);
-  ledStatus = (value ? "ON" : "OFF");
+void setRelay(int value) {
+  addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Set relay to %d"), value);
+  digitalWrite(RELAY_PIN, value);
+  RelayState = (value ? "ON" : "OFF");
   // tell everyone
-  addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("LED now %s"), ledStatus);
-  events.send(ledStatus.c_str(),"ledstate");  // updates all Web clients
-  updateDomoticzSwitch(SWITCH_IDX, value);    // and Domoticz
+  events.send(RelayState.c_str(),"relaystate");    // updates all Web clients
+  updateDomoticzSwitch(SWITCH_IDX, value);         // and Domoticz
+  addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Relay state updated"));
 }
 
-void toggleLed(void) {
-  setLed(1-digitalRead(LED_PIN));
+void toggleRelay(void) {
+  setRelay(1-digitalRead(RELAY_PIN));
 }
 
-void initLed(void) {
-  addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Initializing LED I/O pin."));
-  pinMode(LED_PIN, OUTPUT);
-  setLed(0);
+void initRelay(void) {
+  addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Initializing relay I/O pin."));
+  pinMode(RELAY_PIN, OUTPUT);
+  setRelay(0);
 }
 
 // Button
@@ -52,7 +65,7 @@ void checkButton(void) {
       break;
     case BUTTON_RELEASED:
       addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Push-button released"));
-      toggleLed();
+      toggleRelay();
       break;
     default:   // avoid unhandled BUTTON_UNCHANGED warning/error
       break;
@@ -64,7 +77,7 @@ void checkButton(void) {
 unsigned long temptime;
 
 #ifdef TEST_THS_FAIL
-DFRobot_DHT20 dht20(&Wire, 0x43);
+DFRobot_DHT20 dht20(&Wire, 0x43);  // invalid I2C address
 #else
 DFRobot_DHT20 dht20;
 #endif
@@ -91,8 +104,8 @@ void initSensor() {
 
 void readTemp(void) {
   if (!hasTempSensor) return;
-  if (millis() - temptime > SENSOR_DELAY) {
-    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR( "Reading temperature and humidity sensor"));
+  if (millis() - temptime > config.sensorUpdtTime) {
+    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR( "Reading temperature and humidity data"));
     TempAndHumidity_t tah = dht20.getTempAndHumidity();
     addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Temperature %s --> %.1f"), Temperature.c_str(), tah.temperature);
     Temperature = String(tah.temperature, 1);
@@ -102,28 +115,31 @@ void readTemp(void) {
     events.send(Temperature.c_str(),"tempvalue");        // updates all Web clients
     events.send(Humidity.c_str(),"humdvalue");           // and Domoticz
     updateDomoticzTemperatureHumiditySensor(TEMP_HUMI_IDX, tah.temperature, 100*tah.humidity);
+    addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Temperature and humidity data updated"));
   }
 }
 
 
-// Light Sensor
 
-unsigned long lighttime = 0;
+// Brightness Sensor
 
-void initLight(void) {
+unsigned long brightnesstime = 0;
+
+void initBrightness(void) {
   pinMode(LS_PIN, INPUT);
 }
 
-void readLight() {
-  if (millis() - lighttime >= SENSOR_DELAY) {
-    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading and updating light sensor values"));
+void readBrightness() {
+  if (millis() - brightnesstime >= config.sensorUpdtTime) {
+    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading light data"));
     uint32_t mvolt = analogReadMilliVolts(LS_PIN);
     int value = map(mvolt, 0, 3300, 0, 100);
-    addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Light %s --> %d"), Light.c_str(), value);
-    Light = String(value);
-    lighttime = millis();
-    events.send(Light.c_str(),"lightvalue");       // updates all Web clients
+    addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Brightness %s --> %d"), Brightness.c_str(), value);
+    Brightness = String(value);
+    brightnesstime = millis();
+    events.send(Brightness.c_str(),"brightvalue"); // updates all Web clients
     updateDomoticzLightSensor(LUX_IDX, value);     // and Domoticz
+    addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Brightness data updated"));
   }
 }
 
@@ -131,19 +147,19 @@ void readLight() {
 void checkHardware(void) {
   checkButton();
   readTemp();
-  readLight();
+  readBrightness();
 }
 
 Ticker ticker;
 
 void initHardware(void) {
-  initLed();
+  initRelay();
   initSensor();
-  initLight();
-  // Initialize sensor timers so that a sensor is polled every SENSOR_DELAY/2 ms
+  initBrightness();
+  // Initialize sensor timers so that a sensor is polled every config.sensorUpdtTime/2 ms
   // and wait 2 seconds before starting
-  int HALF_DELAY = SENSOR_DELAY/2;
-  lighttime = millis() - HALF_DELAY + 2000;
-  temptime = lighttime - HALF_DELAY;         // will start with temperature sensor
-  ticker.attach_ms(POLL_TIME, checkHardware);
+  int HALF_DELAY = config.sensorUpdtTime/2;
+  brightnesstime = millis() - HALF_DELAY + 2000;
+  temptime = brightnesstime - HALF_DELAY;         // will start with temperature sensor
+  ticker.attach_ms(config.hdwPollTime, checkHardware);
 }

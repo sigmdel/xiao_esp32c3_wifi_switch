@@ -39,17 +39,17 @@ const char html_index[] PROGMEM = R"rawliteral(
 <body>
   <h1>%DEVICENAME%</h1>
   <table>
-  <tr><td>Temperature:</td><td><b><span id="temp">%TEMPERATURE%</span></b> °C</td></tr>
-  <tr><td>Humidity:</td><td><b><span id="humd">%HUMIDITY%</span></b> &percnt;</td></tr>
-  <tr><td>Brightness:</td><td><b><span id="light">%LIGHT%</span></b></td></tr>
+  <tr><td>Temperature:</td><td><b><span id="temperatureID">%TEMPERATURE%</span></b> °C</td></tr>
+  <tr><td>Humidity:</td><td><b><span id="humidityID">%HUMIDITY%</span></b> &percnt;</td></tr>
+  <tr><td>Brightness:</td><td><b><span id="brightnessID">%BRIGHTNESS%</span></b></td></tr>
   </table>
-  <div class="state"><span id="led">%LEDSTATUS%</span></div>
-  <p><button class="button" onclick="toggleLed()">Toggle</button></p>
+  <div class="state"><span id="relayID">%RELAYSTATE%</span></div>
+  <p><button class="button" onclick="toggleRelay()">Toggle</button></p>
   <p><form action='log' method='get'><button class="button">Console</button></form></p>
 
   <div class="info">%INFO%</div>
   <script>
-  function toggleLed() {
+  function toggleRelay() {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/toggle", true);
     xhr.send();
@@ -67,24 +67,24 @@ const char html_index[] PROGMEM = R"rawliteral(
     }
     }, false);
 
-    source.addEventListener('ledstate', function(e) {
-    console.log("ledstate", e.data);
-    document.getElementById("led").innerHTML = e.data;
+    source.addEventListener('relaystate', function(e) {
+    console.log("relaystate", e.data);
+    document.getElementById("relayID").innerHTML = e.data;
     }, false);
 
     source.addEventListener('tempvalue', function(e) {
     console.log("tempvalue", e.data);
-    document.getElementById("temp").innerHTML = e.data;
+    document.getElementById("temperatureID").innerHTML = e.data;
     }, false);
 
     source.addEventListener('humdvalue', function(e) {
     console.log("humdvalue", e.data);
-    document.getElementById("humd").innerHTML = e.data;
+    document.getElementById("humidityID").innerHTML = e.data;
     }, false);
 
-    source.addEventListener('lightvalue', function(e) {
+    source.addEventListener('brightvalue', function(e) {
     console.log("ligthvalue", e.data);
-    document.getElementById("light").innerHTML = e.data;
+    document.getElementById("brightnessID").innerHTML = e.data;
     }, false);
 
   }
@@ -136,30 +136,28 @@ const char html_console[] PROGMEM = R"rawliteral(
 <body>
   <h1>%DEVICENAME%</h1>
   <textarea readonly id='log' cols='340' wrap='off'>%LOG%</textarea>
-  <br/>
-  <br/>
-  <!-- form method='get' onsubmit='return l(1);' -->
+  <p>
   <input id='cmd' placeholder='Enter command - NOT implemented yet' autofocus>
-  <!-- /form -->
-  <br/>
-  <br/>
+  </p>
+  <p>
   <form action='.' method='get'><button class="button">Main Menu</button></form>
+  </p>
   <div class="info">%INFO%</div>
   <script>
     if (!!window.EventSource) {
-      var source = new EventSource('/events');
+      var source2 = new EventSource('events');
 
-      source.addEventListener('open', function(e) {
-      console.log("Events Connected");
+      source2.addEventListener('open', function(e) {
+      console.log("Events Connected to source2");
       }, false);
 
-      source.addEventListener('error', function(e) {
+      source2.addEventListener('error', function(e) {
       if (e.target.readyState != EventSource.OPEN) {
-        console.log("Events Disconnected");
+        console.log("Events Disconnected from source2");
       }
       }, false);
 
-      source.addEventListener('logvalue', function(e) {
+      source2.addEventListener('logvalue', function(e) {
       console.log("logvalue", e.data);
       ta = document.getElementById("log")
       ta.innerHTML += e.data + "\n";

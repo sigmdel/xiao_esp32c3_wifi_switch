@@ -7,11 +7,12 @@
 #include "hardware.h"
 #include "webserver.h"
 
-// Values to be displayed in Web page
-String ledStatus = "OFF";
+// Values to be displayed in Web page with initial values
+String RelayState = "OFF";
 String Temperature = "21.8";
 String Humidity = "38.9";
-String Light = "51";
+String Brightness = "51";
+
 
 // Webserver instance using default HTTP port 80
 AsyncWebServer server(80);
@@ -26,8 +27,8 @@ String processor(const String& var){
   if (var == "DEVICENAME") return String("Kitchen Light");
   if (var == "TEMPERATURE") return Temperature;
   if (var == "HUMIDITY") return Humidity;
-  if (var == "LIGHT") return Light;
-  if (var == "LEDSTATUS") return ledStatus;
+  if (var == "BRIGHTNESS") return Brightness;
+  if (var == "RELAYSTATE") return RelayState;
   if (var == "LOG") return logHistory();
   if (var == "INFO") return String("Using AsyncWebServer, AJAX and Server-Sent Events (SSE)");
   return String(); // empty string
@@ -44,19 +45,19 @@ void webserversetup(void) {
 
   server.on("/toggle", HTTP_GET, [](AsyncWebServerRequest *request){
     addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /toggle"));
-    toggleLed();
-    request->send_P(200, "text/plain", "OK");
+    toggleRelay();
+    request->send(200, "text/plain", "OK");
   });
 
   server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
     addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /on"));
-    setLed(1);
+    setRelay(1);
     request->send(200, "text/plain", "OK");
   });
 
   server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request){
     addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /off"));
-    setLed(0);
+    setRelay(0);
     request->send(200, "text/plain", "OK");
   });
 
