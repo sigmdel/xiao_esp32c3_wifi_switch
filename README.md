@@ -117,6 +117,24 @@ This version continues segregating all configuration values that can be modified
 
 The important addition in this version is a command interpreter in `commands.hpp` and `commands.cpp`. Currently commands, which for the most part consist of viewing or changing the configuration at run-time, can be entered in the serial console or in the Web interface console.  There will not be a `Backlog` command à la Tasmota. Instead, multiple commands can be specified at once as long as they are separated by a ";".
 
+```
+00:02:37.262 CMD/dbg: Commands from webc: help idx; help log; version
+00:02:37.262 CMD/dbg: parse "help idx"
+00:02:37.262 CMD/dbg: token 0 = "help"
+00:02:37.262 CMD/dbg: token 1 = "idx"
+00:02:37.262 CMD/inf: From webc: help idx
+00:02:37.262 CMD/inf: idx [-d] | [(switch|light|temp) [<value>]]
+00:02:37.262 CMD/dbg: parse "help log"
+00:02:37.262 CMD/dbg: token 0 = "help"
+00:02:37.262 CMD/dbg: token 1 = "log"
+00:02:37.262 CMD/inf: From webc: help log
+00:02:37.262 CMD/inf: log [-d] | [(uart|mqtt|syslog|web) [<level>]]
+00:02:37.262 CMD/dbg: parse "version"
+00:02:37.262 CMD/dbg: token 0 = "version"
+00:02:37.262 CMD/inf: From webc: version
+00:02:37.262 CMD/inf: Firmware version 0.0.3 (Apr 13 2023 00:14:54)
+```
+
 This first version of the command interpreter is just a *proof of concept* and it will not be truly operational until the configuration can be saved to non-volatile memory and read back from it when the ESP32C3 boots. Right now, that seems the simplest way of a  change from dynamic IP address to a static IP address.
 
 ## License
