@@ -1,6 +1,6 @@
 # xiao_esp32c3_wifi_switch
 
-***XIAO ESP32C3 based Wi-Fi Switch***
+***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.4*)
 
 **Source code that accompanies [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)**
 
@@ -108,6 +108,16 @@ There is still a problem with HTTP requests to a missing Domoticz server or to a
 ## 08_ticker_hdw
 
 No luck so far with asynchronous HTTP request libraries. Tests of embedding a blocking HTTP request in a (RTOS) task are positive. However, if tasks are used for this, they should be used for everything else including button presses. Consequently, another approach is used: HTTP requests are buffered in a FIFO queue with replacement. This is the same technique as used with the log. To see how that works, ensure that the serial log level is set to LOG_DEBUG (recompile and upload the firmware if the level had to be changed), stop Domoticz, and press the button many times in quick succession. Quickly, the buffer will be filled and old requests will be dropped. Nevertheless, the LED will follow the state of the button because the hardware is now polled with a `Ticker`. Every 25 milliseconds (`POLL_TIME` is set in `hardware.h`), a hardware timer interrupt takes care of checking the state of the button and the sensors if need be. Since this is an interrupt, the button state is monitored even as an HTTP request might be in progress.
+
+The alternate hardware drivers, first shown in `03_alt_wifi_switch` have been updated and are contained in `hdw_alt/hardware.cpp'. This is a drop-in replacement for 'ticker_hdw/hardware.cpp'.
+
+## 09_with_cmd
+
+This version continues segregating all configuration values that can be modified by the user at run-time into `config.h` and `config.cpp`. As before the default values are in `user_config.h` which is not included in the repository. Use `user_config.h.template` as a model.
+
+The important addition in this version is a command interpreter in `commands.hpp` and `commands.cpp`. Currently commands, which for the most part consist of viewing or changing the configuration at run-time, can be entered in the serial console or in the Web interface console.  There will not be a `Backlog` command à la Tasmota. Instead, multiple commands can be specified at once as long as they are separated by a ";".
+
+This first version of the command interpreter is just a *proof of concept* and it will not be truly operational until the configuration can be saved to non-volatile memory and read back from it when the ESP32C3 boots. Right now, that seems the simplest way of a  change from dynamic IP address to a static IP address.
 
 ## License
 
