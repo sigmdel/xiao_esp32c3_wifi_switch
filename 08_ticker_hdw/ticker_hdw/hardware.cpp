@@ -138,7 +138,7 @@ void readBrightness() {
     Brightness = String(value);
     brightnesstime = millis();
     events.send(Brightness.c_str(),"brightvalue"); // updates all Web clients
-    updateDomoticzLightSensor(LUX_IDX, value);     // and Domoticz
+    updateDomoticzBrightnessSensor(LUX_IDX, value);     // and Domoticz
     addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Brightness data updated"));
   }
 }
