@@ -1,6 +1,6 @@
 # hdw_alt
 
-This directory contains alternate hardware drivers. The files `hardware.h` and `hardware.cpp` are drop-in replacements for those found in the project. See [Alternate Hardware](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html#alt_hardware).
+This directory contains alternate hardware drivers. The file `hardware.cpp` is drop-in replacement for the one found in the project. See [Alternate Hardware](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html#alt_hardware).
 
 ## Supported temperature and humidity sensors:
 
