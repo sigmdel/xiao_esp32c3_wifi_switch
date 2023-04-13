@@ -9,6 +9,7 @@ extern String Humidity;
 extern String Brightness;
 
 // Hardware abstraction
-void initHardware(void);     // Initialize the hardware (LED, button, temperature and light sensors)
-void toggleRelay(void);      // Toggle the relay state and update String relayState
-void setRelay(int value);    // Set the LED on (value = 1) or off (value = 0)
+void initHardware(void);    // Initialize the hardware (relay, button, temperature and light sensors)
+void toggleRelay(void);     // Toggle the relay state and update RelayState in main.cpp
+void setRelay(int value);   // Set the relay on (value = 1) or off (value = 0)
+

@@ -95,7 +95,7 @@ void updateDomoticzSwitch(int idx, int value) {
   addToRing(url);
 }
 
-void updateDomoticzLightSensor(int idx, int value) {
+void updateDomoticzBrightnessSensor(int idx, int value) {
   String url = startUrl(idx);
   url += "0&svalue=";
   url += value;

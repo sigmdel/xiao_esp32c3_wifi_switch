@@ -6,7 +6,7 @@
 void updateDomoticzSwitch(int idx, int value);
 
 // Update the "Lux" level to value in the light sensor with the given idx.
-void updateDomoticzLightSensor(int idx, int value);
+void updateDomoticzBrightnessSensor(int idx, int value);
 
 // Update the Temperature (value1) and Humidity (value2) values in the Temp+Humidity
 // sensor with the given idx. Must set the humidity state to normal (0), comfortabe (1),
