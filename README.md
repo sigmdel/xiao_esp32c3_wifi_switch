@@ -2,7 +2,7 @@
 
 ***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.4*)
 
-**Source code that accompanies [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)**
+**Source code that accompanies [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)**, **[Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)**...
 
 ## Overview of the Wi-Fi Switch
 
@@ -69,25 +69,28 @@ This project corresponds to section 10 of [A Wi-Fi Switch for Domoticz using a X
 
 Full Web page reloading using a refresh meta tag is replaced by asynchronous JavaScript and XML (AJAX) based Web page updates.
 
-This project will be described in an upcoming post [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html).
+This project is described in section 1 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2 (*Asynchronious Web Page Updates*)](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html).
 
 
 ## 05_websocket_update
 
 Full Web page reloading using a refresh meta tag is replaced by asynchronous websocket based Web page updates.
 
-This project will be described in an upcoming post [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html).
+This project will be described in an upcoming section 2 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2 (*Asynchronious Web Page Updates*)](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html).
+
 
 
 ## 06_sse_update
 
 Full Web page reloading using a refresh meta tag is replaced by asynchronous Server-Sent Events (SSE) based Web page updates.
 
-This project will be described in an upcoming post [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html).
+
+This project will be described in an upcoming section 2 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2 (*Asynchronious Web Page Updates*)](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html).
+
 
 > ### About the last 3 xxx_update projects
 >
-> It seems that [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html) is not about to be available in the near future, so a short explanation might be in order about these last three projects. They present 3 techniques that could be used to update the information displayed on the Web page without reloading the page itself as done in the first three projects. Tasmota uses AJAX, but Server-Sent Events will be used in further developments.
+> It seems that a complete version of  [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html) is not about to be available in the near future, so a short explanation might be in order about these last three projects. They present 3 techniques that could be used to update the information displayed on the Web page without reloading the page itself as done in the first three projects. While Tasmota uses AJAX, and Websockets probably represent the most powerful technique, Server-Sent Events will be used in further developments.
 
 <!-- 
 https://stackoverflow.com/questions/5195452/websockets-vs-server-sent-events-eventsource/5326159
