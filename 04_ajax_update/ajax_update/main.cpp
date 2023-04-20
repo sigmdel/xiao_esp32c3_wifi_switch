@@ -49,6 +49,17 @@ String processor(const String& var){
   return String(); // empty string
 }
 
+String makeResponse(void) {
+  String resp = ledStatus;
+  resp += "\n";
+  resp += Temperature;
+  resp += "\n";
+  resp += Humidity;
+  resp += "\n";
+  resp += Light;
+  return resp;
+}
+
 // Webserver instance using default HTTP port 80
 AsyncWebServer server(80);
 
@@ -77,18 +88,13 @@ void setup() {
   server.on("/toggle", HTTP_GET, [](AsyncWebServerRequest *request){
     ESP_LOGI(TAG2, "Web button pressed.");
     toggleLed();
-    request->send(200, "text/plain", "OK");
+    String resp = makeResponse();
+    request->send(200, "text/plain", resp.c_str());  // updates the client making the request only
   });
   server.on("/state", HTTP_GET, [](AsyncWebServerRequest *request){
     ESP_LOGI(TAG2, "/state requested");
-    String resp = ledStatus;
-    resp += "\n";
-    resp += Temperature;
-    resp += "\n";
-    resp += Humidity;
-    resp += "\n";
-    resp += Light;
-    request->send(200, "text/plain", resp.c_str());
+    String resp = makeResponse();
+    request->send(200, "text/plain", resp.c_str()); // updates the client making the request only
   });
   server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
     ESP_LOGI(TAG2, "Domoticz command on");

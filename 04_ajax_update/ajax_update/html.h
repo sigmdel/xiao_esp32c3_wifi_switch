@@ -29,27 +29,23 @@ const char html_index[] PROGMEM = R"rawliteral(
   <p><button class="button" onclick="toggleLed()">Toggle</button></p>
   <div class="info">%INFO%</div>
   <script>
-    function toggleLed() {
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", "/toggle", true);
-      xhr.send();
-    }
-
-    setInterval(function ( ) {
+    function makeRequest(uri) {
+      console.log("makeRequest: GET", uri);
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           const resp = this.responseText.split(/\r?\n/);
-          console.log("setInterval response", resp);
           document.getElementById("led").innerHTML = resp[0];
           document.getElementById("temp").innerHTML = resp[1];
           document.getElementById("humd").innerHTML = resp[2];
           document.getElementById("light").innerHTML = resp[3];
         }
       };
-      xhttp.open("GET", "/state", true);
+      xhttp.open("GET", uri, true);
       xhttp.send();
-    }, 1000 )
+    }
+    function toggleLed() { makeRequest("/toggle"); };
+    setInterval(function ( ) { makeRequest("/state"); }, 2000)
   </script>
 </body>
 </html>)rawliteral";
