@@ -142,6 +142,26 @@ The important addition in this version is a command interpreter in `commands.hpp
 
 This first version of the command interpreter is just a *proof of concept* and it will not be truly operational until the configuration can be saved to non-volatile memory and read back from it when the ESP32C3 boots. Right now, that seems the simplest way of a  change from dynamic IP address to a static IP address.
 
+## 10_with_config
+
+Implemented `config [save|load|default]` command.
+
+Added `wifi [-c | -o] | [<ssid> [<pswd]]`  command.
+
+Added a device name configuration and added a device name option to the `name` command 
+
+Changed the `staip` syntax to set the station, gateway and netmaks IP address in that order just like in the `WiFi.config()` function.
+
+Added a test to ensure that a static station IP address is on the same sub network as the gateway.
+
+Removed `secrets.h` because it is now possible to connect to a different Wi-Fi network with the <code>wifi</code> command.
+
+Added a `defaultNames()` in `config.cpp`
+
+Implemented restart (partially)
+
+Added `wifiutils` 
+
 ## License
 
 Copyright 2023, Michel Deslierres. No rights reserved. 
