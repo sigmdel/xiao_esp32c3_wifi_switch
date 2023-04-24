@@ -1,12 +1,13 @@
 # xiao_esp32c3_wifi_switch
 
-***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.4*)
+***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.5*)
 
 Source code that accompanies **A Wi-Fi Switch for Domoticz using a XIAO ESP32C3:**
 
    + [*Part 1 - Demonstration Projects*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)
    + [*Part 2 - Asynchronious Web Page Updates*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html)
    + *Part 3 - Better User Experience...* 
+   + [*Part 4 - Commands*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_4_en.html)
 
 ## Overview of the Wi-Fi Switch
 
@@ -144,23 +145,17 @@ This first version of the command interpreter is just a *proof of concept* and i
 
 ## 10_with_config
 
-Implemented `config [save|load|default]` command.
+Added saving to and loading from NVS of the user-defined configuration. With improvements and a revamped ESP restart command, the command interpreter is now working properly. There is a new `wifi` command that can be used to disconnect from the wireless network and then reconnect either to the previously used Wi-Fi access point or to a new one. A new unit `wifiutils` takes care of the details. 
 
-Added `wifi [-c | -o] | [<ssid> [<pswd]]`  command.
+Changing from static IP to a dynamic IP with `staip` can now be done without restarting the ESP32. For that reason, there is no reason to keep `secrets.h` and `secrets.h.template` which have been removed from the project.
 
-Added a device name configuration and added a device name option to the `name` command 
+The list of command and their syntax can be found in [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 4: Commands](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_4_en.html). This is still very much a work in progress, so commands will be added and changes to existing commands may be made. Also, the command interpreter needs much reworking. It's as if each command is parsed with a different approach in an attempt to find a common approach that could be used in all cases. 
 
-Changed the `staip` syntax to set the station, gateway and netmaks IP address in that order just like in the `WiFi.config()` function.
+## Upcoming
 
-Added a test to ensure that a static station IP address is on the same sub network as the gateway.
+With version 0.0.5 (10_with_config), the project has attained a level such that it could be used in situations where a serial connection is easily established to update the firmware.
 
-Removed `secrets.h` because it is now possible to connect to a different Wi-Fi network with the <code>wifi</code> command.
-
-Added a `defaultNames()` in `config.cpp`
-
-Implemented restart (partially)
-
-Added `wifiutils` 
+An obvious addition would be over-the-air uploading of the firmware. Also MQTT should be enabled; as it is probably the best protocol to communicate with Domoticz. Finally, some sort of Wi-Fi manager (either DIY or a library) would be a useful addition.
 
 ## License
 
