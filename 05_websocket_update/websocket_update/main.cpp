@@ -51,7 +51,7 @@ AsyncWebServer server(80);
 // Create an websocket
 AsyncWebSocket ws("/ws");
 
-// Function used by hardware3.cpp to update all client web pages
+// Function used by hardware.cpp to update all client web pages
 void updateAllClients(void) {
   ws.printfAll("%s\n%s\n%s\n%s", ledStatus.c_str(), Temperature.c_str(), Humidity.c_str(), Light.c_str());
 }
@@ -93,7 +93,7 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(250);
+    delay(100);
     ESP_LOGI(TAG, "Waiting for Wi-Fi connection");
   }
 

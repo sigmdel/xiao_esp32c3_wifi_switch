@@ -37,7 +37,7 @@ const char html_index[] PROGMEM = R"rawliteral(
       websocket = new WebSocket(gateway);
       websocket.onopen    = onOpen;
       websocket.onclose   = onClose;
-      websocket.onmessage = onMessage; // <-- add this line
+      websocket.onmessage = onMessage;
     }
     function onOpen(event) {
       console.log('Connection opened');
