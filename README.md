@@ -151,11 +151,11 @@ Changing from static IP to a dynamic IP with `staip` can now be done without res
 
 The list of command and their syntax can be found in [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 4: Commands](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_4_en.html). This is still very much a work in progress, so commands will be added and changes to existing commands may be made. Also, the command interpreter needs much reworking. It's as if each command is parsed with a different approach in an attempt to find a common approach that could be used in all cases. 
 
+Added the <a href="https://github.com/ayushsharma82/AsyncElegantOTA" target="_blank">AsyncElegantOTA</a> library by Ayush Sharma. It is not how I usually handle over-the-air updates, but it was very simple to add and does handle authentication if that is required. 
+
 ## Upcoming
 
-With version 0.0.5 (10_with_config), the project has attained a level such that it could be used in situations where a serial connection is easily established to update the firmware.
-
-An obvious addition would be over-the-air uploading of the firmware. Also MQTT should be enabled; as it is probably the best protocol to communicate with Domoticz. Finally, some sort of Wi-Fi manager (either DIY or a library) would be a useful addition.
+With version 0.0.5 (10_with_config), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but using dynamic IP address will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address. The obvious solution is to communicate with Domoticz with MQTT. So that will be the next step. Also some sort of Wi-Fi manager (either DIY or a library) would be a useful addition.
 
 ## License
 

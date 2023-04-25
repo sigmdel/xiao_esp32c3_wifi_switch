@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include "AsyncTCP.h"
 #include "ESPAsyncWebServer.h"
+#include "AsyncElegantOTA.h"
 #include "logging.h"
 #include "config.h"
 #include "html.h"
@@ -135,6 +136,10 @@ void webserversetup(void) {
   // add SSE handler
   addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("Adding SSE handler"));
   server.addHandler(&events);
+
+  // Starting Async OTA web server AFTER all the server.on requests registered
+  addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("Add OTA server at /update"));
+  AsyncElegantOTA.begin(&server);
 
   // Start async web browser
   server.begin();

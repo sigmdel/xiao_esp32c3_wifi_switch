@@ -88,6 +88,7 @@ const char html_index[] PROGMEM = R"rawliteral(
     table{margin-left: auto; margin-right: auto; margin-top:20px;}
     td{font-size: 1.5rem; text-align: left; padding: 8px;}
     .button{display: inline-block; background-color: blue; border: none; border-radius: 6px; color: white; font-size: 1.5rem; width: 12em; height: 3rem; text-decoration: none; margin: 2px; cursor: pointer;}
+    .bred{background:#d43535;}
     .state{font-size: 2rem; font-weight: bold;margin-top:28px; text-align:center;}
     .info{margin-top:48px;}
   </style>
@@ -102,6 +103,8 @@ const char html_index[] PROGMEM = R"rawliteral(
   <div class="state"><span id="relayID">%RELAYSTATE%</span></div>
   <p><button class="button" onclick="toggleRelay()">Toggle</button></p>
   <p><form action='log' method='get'><button class="button">Console</button></form></p>
+  <p><form action='update' method='get'><button class="button">Update</button></form></p>
+  <p><form action='rst' method='get' onsubmit='return confirm("Confirm Restart");'><button class='button bred'>Restart</button></form></p>
 
   <div class="info">%INFO%</div>
   <script>

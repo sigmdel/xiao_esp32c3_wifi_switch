@@ -55,6 +55,7 @@ void initRelay(void) {
 // Button
 
 mdSimpleButton button = mdSimpleButton(BUTTON_PIN);
+
 void checkButton(void) {
   switch( button.update()) {
     case BUTTON_LONGPRESS:
