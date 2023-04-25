@@ -42,16 +42,16 @@ static const char *params[COMMAND_COUNT] = {
   "[-d] | [<host> [<port>]] ( [-x] | [-c <user> [<pswd>]] )", // dmtz
   "[<command>]",                                   // help
   "[-d] | [(switch|lux|temp) [<id>]]",             // idx
-  "[-d] | [(uart|mqtt|syslog|webc) [ERR|inf|dbg|<level>]]",   // log
+  "[-d] | [(uart|mqtt|syslog|webc) [ERR|inf|dbg|<level>]]",   // logw
   "[-d] | [[<host> [<port>]] ( [-x] | [-c <user> <pswd>]] )", // mqtt
-  "[-d] | [-h [<hostname>]] | [- n [<device name>]]",         // name
+  "[-d] | [-h [<hostname>]] | [-n [<device name>]]",          // name
   "[[0|1|2]",                                      // restart
-  "[-d | -x] | [<ip> <gateway> <mask>]",           // statip
+  "[-d|-x] | [<ip> <gateway> <mask>]",             // statip
   "[-d] | [<hostIP> [<port>]]",                    // syslog
   "[-d] | [(poll|update|connect) [<ms>]]",         // time
   "[-d] | [(in|out) [<topic>]]",                   // topic
   "",                                              // version
-  "[-c | -o] | [<ssid> [<pswd]]"                   // wifi
+  "[-x|-r] | [<ssid> [<pswd]]"                   // wifi
 };
 
 #define TOKENCOUNT 7             // one more than the maximum number of tokens used
