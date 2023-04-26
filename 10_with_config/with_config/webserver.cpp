@@ -16,6 +16,7 @@ String Temperature = "21.8";
 String Humidity = "38.9";
 String Brightness = "51";
 
+extern void espRestart(void);
 
 // Webserver instance using default HTTP port 80
 AsyncWebServer server(80);
@@ -123,8 +124,8 @@ void webserversetup(void) {
 
   server.on("/rst", HTTP_GET, [](AsyncWebServerRequest *request){
     addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /rst"));
-    request->send_P(200, "text/plain", "Restart device");
-    esp_restart();
+    request->send(200, "text/plain", "Restart device");
+    espRestart();
   });
 
   server.onNotFound([] (AsyncWebServerRequest *request) {
