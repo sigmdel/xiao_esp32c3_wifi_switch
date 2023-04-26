@@ -18,6 +18,8 @@
   https://docs.microsoft.com/en-us/dotnet/api/system.version.-ctor?view=net-6.0
 */
 
+// NOTE: Do not forget to do a clean build to update the build date returned by FirmwareVersionToString()
+
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 0
 #define VERSION_BUILD 5
@@ -27,7 +29,10 @@ union Version_t {
   uint32_t Version;
 };
 
+// returns aVersion as a string. Example: "0.8.12"
 String VersionToString(Version_t aVersion);
+
+// returns firmwareVersion as a string with build data: Example "1.9.2 (Apr 26 2023 16:53:40)"
 String FirmwareVersionToString(void);
 
 
