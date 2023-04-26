@@ -20,7 +20,8 @@ void wifiLogStatus(void) {
     addToLogP(LOG_INFO, TAG_COMMAND, PSTR("Using DHCP obtained IP address"));
 }
 
-//  [ ] TODO: refactor wifiConnect and wifiReconnect
+//  [ ] BUG: missing static ip in wifiConnect
+//           refactor wifiConnect and wifiReconnect
 
 void wifiConnect(String ssid, String pswd) {
   if (WiFi.isConnected()) {
