@@ -25,7 +25,6 @@ enum Log_level {
 };
 
 extern bool wifiConnected;
-//extern const char *logLevelString[LOG_LEVEL_COUNT];
 
 enum Log_tag {
   TAG_UNDEF = 0, // "???"
@@ -74,7 +73,7 @@ void addToLogf(Log_level level, Log_tag tag, const char *format, ...);
 void addToLogP(Log_level level, Log_tag tag, const char *line);
 
   // Typical use: sendToLogP(LOG_ERR, TAG_HARDWARE, PSTR("Fatal Error"), PSTR("REBOOTING"));
-void addToLogP(Log_level level, Log_tag tag, const char *linep1, const char *linep2);
+//void addToLogP(Log_level level, Log_tag tag, const char *linep1, const char *linep2);
 
   // Typical use: sendToLogPf(LOG_DEBUG, TAG_MQTT, PSTR("Count: %d, free: %d at %s"), 32, 12498, "some_string");
 void addToLogPf(Log_level level, Log_tag tag, const char *pline, ...);
@@ -82,6 +81,9 @@ void addToLogPf(Log_level level, Log_tag tag, const char *pline, ...);
   // Transmits the oldest message in the log buffer not already sent.
   // Call in the loop() when it should be safe to access the Serial device, etc.
 int sendLog(void);
+
+  // Sends all queued log messages
+void flushLog(void);
 
 void mstostr(unsigned long milli, char* sbuf, int sbufsize);
 

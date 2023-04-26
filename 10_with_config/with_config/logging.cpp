@@ -172,6 +172,14 @@ int sendLog(void) {
   return 1;
 }
 
+void flushLog(void) {
+  // send out any queued messages;
+  while (count) {
+    sendLog();
+    delay(10);
+  }
+}
+
 String logHistory(void) {
   char mxtime[15];
   String hist;
