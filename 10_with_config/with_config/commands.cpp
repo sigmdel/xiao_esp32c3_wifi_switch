@@ -38,11 +38,11 @@ static const char* cmds[] = {
 #define COMMAND_COUNT (int)(sizeof (cmds) / sizeof (const char *))
 
 static const char *params[COMMAND_COUNT] = {
-  "[load|default|save [force]] | [auto (off|on)]",   // config
+  "[load|default|save [force]] | [auto (off|on)]",            // config
   "[-d] | [<host> [<port>]] ( [-x] | [-c <user> [<pswd>]] )", // dmtz
-  "[<command>]",                                   // help
-  "[-d] | [(switch|lux|temp) [<id>]]",             // idx
-  "[-d] | [(uart|mqtt|syslog|webc) [ERR|inf|dbg|<level>]]",   // logw
+  "[<command>]",                                              // help
+  "[-d] | [(switch|temp|lux) [<id>]]",                        // idx
+  "[-d] | [(uart|mqtt|syslog|webc) [ERR|inf|dbg|<level>]]",   // log
   "[-d] | [[<host> [<port>]] ( [-x] | [-c <user> <pswd>]] )", // mqtt
   "[-d] | [-h [<hostname>]] | [-n [<device name>]]",          // name
   "[[0|1|2]",                                      // restart
@@ -51,7 +51,7 @@ static const char *params[COMMAND_COUNT] = {
   "[-d] | [(poll|update|connect) [<ms>]]",         // time
   "[-d] | [(in|out) [<topic>]]",                   // topic
   "",                                              // version
-  "[-x|-r] | [<ssid> [<pswd]]"                   // wifi
+  "[-x|-r] | [<ssid> [<pswd]]"                     // wifi
 };
 
 #define TOKENCOUNT 7             // one more than the maximum number of tokens used
@@ -108,7 +108,9 @@ int commandId(int idx = 0) {
 //
 cmndError_t doConfig(int count, int &errIndex) {
   bool force = false;
-  if (count > 1) {
+  if (count == 1)
+    errIndex = 1;
+  else {
     errIndex = 2; // assume xtra1, extr2 or invalid param (off | on)
     token[1].toLowerCase();
     if (token[1].equals("auto")) {
@@ -141,7 +143,7 @@ cmndError_t doConfig(int count, int &errIndex) {
       return etUnknownCommand;
     }
   } // count > 1
-  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Config version: %d, size: %d, auto: %s"), config.version, sizeof(config_t),
+  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Config version: %d, size: %d, auto(save): %s"), config.version, sizeof(config_t),
       (configAutoSave) ? "on" : "off");
 
   if (count > errIndex)
@@ -263,15 +265,14 @@ cmndError_t doHelp(int count, int &errIndex) {
 
 
 void showIdx(void) {
-  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("switch idx: %d"), config.dmtzSwitchIdx);
-  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("light sensor idx: %d"), config.dmtzLSIdx);
-  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("temp sensor idx: %d"), config.dmtzTHSIdx);
+  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Domoticz virtual Idx: switch = %d, light sensor = %d, temp + humid sensor = %d"),
+    config.dmtzSwitchIdx, config.dmtzLSIdx, config.dmtzTHSIdx);
 }
 
-//   1    2    3            2                 3        4  <<< count
-//   0    1    2            1                 2        3  <<< index
-//  idx [-d] xtra1 | [(switch|light|temp) [<value>]] xtra2
-//  "idx -d"
+//   1   2                  2            3       4  <<< count
+//   0   1                  1            2       3  <<< index
+// idx [-d] xtra1 | [(switch|temp|lux) [<id>]] xtra2
+//
 cmndError_t doIdx(int count, int &errIndex) {
 
   if (count == 1) {
@@ -290,7 +291,9 @@ cmndError_t doIdx(int count, int &errIndex) {
   }
 
   long anIdx = -1;
-  if (count > 2) {
+  bool setvalue = (count > 2);
+
+  if (setvalue) {
     anIdx = token[2].toInt();
     if (anIdx <= 0) {
       errIndex = 2;
@@ -301,15 +304,15 @@ cmndError_t doIdx(int count, int &errIndex) {
   token[1].toLowerCase();
 
   if (token[1].equals("switch")) {
-    if (count > 2) config.dmtzSwitchIdx = anIdx;
+    if (setvalue) config.dmtzSwitchIdx = anIdx;
     addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("switch idx: %d"), config.dmtzSwitchIdx);
 
   } else if (token[1].equals("lux")) {
-    if (count > 2) config.dmtzLSIdx = anIdx;
+    if (setvalue) config.dmtzLSIdx = anIdx;
     addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("light sensor idx: %d"), config.dmtzLSIdx);
 
   } else if (token[1].equals("temp")) {
-    if (count > 2) config.dmtzTHSIdx = anIdx;
+    if (setvalue) config.dmtzTHSIdx = anIdx;
     addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("temp sensor idx: %d"), config.dmtzTHSIdx);
 
   } else {
@@ -339,65 +342,85 @@ const char *logFacility[LOG_FACILITY_COUNT] = {
 };
 
 cmndError_t doLog(int count, int &errIndex) {
-  if (count < 2) return etMissingParam;
+  if (count < 2) {
+    String st("Log levels ");
+    for (int i=0; i<LOG_FACILITY_COUNT; i++) {
+      st += logFacility[i];
+      st += ": ";
+      int level = -1;
+      switch (i) {
+        case 0: level = config.logLevelUart; break;
+        case 1: level = config.logLevelMqtt; break;
+        case 2: level = config.logLevelSyslog; break;
+        case 3: level = config.logLevelWebc; break;
+      }
+      if ((level < 0) || (level >= LOG_LEVEL_COUNT))
+        st += "unknown";
+      else
+        st += logLevelString[level];
+      if (i < LOG_FACILITY_COUNT-1)
+        st += ", ";
+    }
+    addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Log levels %s"), st.c_str());
+    return etNone;
+  }
   int facility = - 1;
   int level = -1;
-  if (count > 1) {
-    token[1].toLowerCase();
-    facility = -1;
-    for (int i=0; i < LOG_FACILITY_COUNT; i++) {
-      if (token[1].equals(logFacility[i])) {
-        facility = i;
+  token[1].toLowerCase();
+  facility = -1;
+  for (int i=0; i < LOG_FACILITY_COUNT; i++) {
+    if (token[1].equals(logFacility[i])) {
+      facility = i;
+      break;
+    }
+  }
+  if (facility < 0) {
+    errIndex = 1;
+    return etUnknownParam;
+  }
+  errIndex = 2;
+  bool setvalue = (count > 2);
+  if (setvalue) {
+    // [ ] BUG: logLevelString[] are mixed case!
+    //token[2].toLowerCase();
+    for (int i = 0; i<LOG_LEVEL_COUNT; i++) {
+      if (token[2].equals(logLevelString[i])) {
+        level = i;
         break;
       }
     }
-    if (facility < 0) {
-      errIndex = 1;
-      return etUnknownParam;
+    // not a string, assume it is a number
+    if ((level < 0) && (token[2].length()==1)) {
+      level = (byte)token[2][0] - '0';
     }
-    errIndex = 2;
-    if (count > 2) {
-      // [ ] BUG: logLevelString[] are mixed case!
-      //token[2].toLowerCase();
-      for (int i = 0; i<LOG_LEVEL_COUNT; i++) {
-        if (token[2].equals(logLevelString[i])) {
-          level = i;
-          break;
-        }
-      }
-      // not a string, assume it is a number
-      if ((level < 0) && (token[2].length()==1)) {
-        level = (byte)token[2][0] - '0';
-      }
-      if ( (level < 0) || (level >= LOG_LEVEL_COUNT) ) {
-        return etInvalidValue;
-      }
-    } // count > 2
-  } // count > 1
+    if ( (level < 0) || (level >= LOG_LEVEL_COUNT) ) {
+      return etInvalidValue;
+    }
+  }
   switch (facility) {
     case 0: {
-      if (count > 2)
+      if (setvalue)
         config.logLevelUart = level;
       else
         level = config.logLevelUart;
       break;
     }
     case 1: {
-      if (count > 2)
+      if (setvalue)
         config.logLevelMqtt = level;
       else
         level = config.logLevelMqtt;
       break;
     }
     case 2: {
-      if (count > 2)
+      if (setvalue)
         config.logLevelSyslog = level;
       else
         level = config.logLevelSyslog;
       break;
     }
     case 3: {
-      if (count > 2)
+      if (setvalue)
         config.logLevelWebc = level;
       else
         level = config.logLevelWebc;
@@ -560,6 +583,8 @@ cmndError_t doName(int count, int &errIndex) {
 }
 
 
+extern void espRestart(void);
+
 //     1    2     3   <<< count
 //     0    1     2   <<< errIndex
 // restart [n]  xtra2
@@ -588,7 +613,7 @@ cmndError_t doRestart(int count, int &errIndex) {
     if (n == 1)
       saveConfig(true);
   }
-  esp_restart();
+  espRestart();
   return etNone; // keep compiler happy
 }
 
@@ -719,6 +744,13 @@ cmndError_t doSyslog(int count, int &errIndex) {
 // time [-d] | [(poll|update|connect) [<ms>]]  xtra
 //
 cmndError_t doTime(int count, int &errIndex) {
+
+  if (count < 2) {
+    addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Times in ms: poll = %d, update = %d, connect = %d"),
+      config.hdwPollTime, config.sensorUpdtTime, config.dmtzReqTimeout);
+    return etNone;
+  }
+
   long aTime;
 
   if ((count > 1) and token[1].equals("-d")) {
@@ -751,7 +783,7 @@ cmndError_t doTime(int count, int &errIndex) {
 
   } else if (token[1].equals("connect")) {
     if (count > 2) { config.dmtzReqTimeout = aTime; }
-    addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("HTTP request timeout: %d ms"), config.dmtzReqTimeout);
+    addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("HTTP connect timeout: %d ms"), config.dmtzReqTimeout);
 
   } else if (token[1].equals("update")) {
     if (count > 2) { config.sensorUpdtTime = aTime; }

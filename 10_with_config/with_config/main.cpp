@@ -18,14 +18,28 @@
   // remove all test modules
 #endif
 
+
+/* It seems that the radios are turned off before  the shutdownHandler is called!
+
 void shutdownHandler(void) {
   // use esp_register_shutdown_handler in setup()
   // see https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/misc_system_api.html#_CPPv429esp_register_shutdown_handler18shutdown_handler_t
+  Serial.println("ShutdownHandler");
+  addToLogP(LOG_INFO, TAG_SYSTEM, PSTR("Restarting in 1 second"));   // shows up in serial log but not web console!!
+  if (configAutoSave)
+    saveConfig(); // save configuration if changed
+  flushLog();
+  // esp_restart() will be executed next;
+}
+*/
+
+void espRestart(void) {
   addToLogP(LOG_INFO, TAG_SYSTEM, PSTR("Restarting in 1 second"));
   if (configAutoSave)
     saveConfig(); // save configuration if changed
-  delay(1000);  // wait one second
-  // esp_restart() will be executed next;
+  flushLog();
+  delay(1000);
+  esp_restart();
 }
 
 String inputString;
@@ -78,7 +92,6 @@ void setup() {
   delay(2000);      // should be sufficient for USB serial to be up
 
   loadConfig();
-  esp_register_shutdown_handler(shutdownHandler);
 
   wifiReconnect();
   webserversetup();
