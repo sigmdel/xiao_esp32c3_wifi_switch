@@ -877,12 +877,12 @@ dofnct doFunctionList[COMMAND_COUNT] = {
   doWifi
 };
 
-void exec(String command, int source) {
+void exec(String command) {
   cmndError_t error = etNone;
   int count = parseString(command);  // fill tokens
   if (count < 1) return;
 
-  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("From %s: %s"), cmdsrc[source], command.c_str());
+  addToLogPf(LOG_DEBUG, TAG_COMMAND, PSTR("exec %s"), command.c_str());
 
   int errIndex = 0;
   int id = commandId();
@@ -915,7 +915,7 @@ void exec(String command, int source) {
 }
 
 void doCommand(cmndSource_t source, String cmnd) {
-  addToLogPf(LOG_DEBUG, TAG_COMMAND, PSTR("Commands from %s: %s"), cmdsrc[source], cmnd.c_str());
+  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Command from %s: %s"), cmdsrc[source], cmnd.c_str());
   int ndx0 = 0;
   int ndx1 = 0;
   int n = 0;
@@ -937,8 +937,7 @@ void doCommand(cmndSource_t source, String cmnd) {
     command.trim();
     if (command.length() > 0) {
       n++;
-      //addToLogPf(LOG_DEBUG, TAG_COMMAND, PSTR("command %d = \"%s\" ndx0: %d, ndx1: %d"), n, command.c_str(), ndx0, ndx1);
-      exec(command, source);
+      exec(command);
     }
   }
   if (!n) addToLogP(LOG_DEBUG, TAG_COMMAND, PSTR("no commands"));
