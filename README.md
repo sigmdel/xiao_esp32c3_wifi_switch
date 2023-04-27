@@ -88,12 +88,11 @@ This project is described in section 2 of [A Wi-Fi Switch for Domoticz using a X
 Full Web page reloading using a refresh meta tag is replaced by asynchronous Server-Sent Events (SSE) based Web page updates.
 
 
-This project will be described in an upcoming section 3 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2 (*Asynchronious Web Page Updates*)](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html).
-
+This project is described in section 3 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 2 (*Asynchronious Web Page Updates*)](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html)
 
 > ### About the last 3 xxx_update projects
 >
-> They present 3 techniques that could be used to update the information displayed on the Web page without reloading the page itself as done in the first three projects. While Tasmota uses AJAX, and Websockets probably represent the most powerful technique, Server-Sent Events and AJAX will be used in further developments.
+> They present 3 techniques that could be used to update the information displayed on the Web page without reloading the page itself as done in the first three projects. While Tasmota uses AJAX, and Websockets probably represent the most powerful technique, Server-Sent Events and AJAX will be used starting in <code>08_ticker_hdw</code>.
 
 <!-- 
 https://stackoverflow.com/questions/5195452/websockets-vs-server-sent-events-eventsource/5326159
@@ -115,7 +114,7 @@ There is still a problem with HTTP requests to a missing Domoticz server or to a
 
 No luck so far with asynchronous HTTP request libraries. Tests of embedding a blocking HTTP request in a (RTOS) task are positive. However, if tasks are used for this, they should be used for everything else including button presses. Consequently, another approach is used: HTTP requests are buffered in a FIFO queue with replacement. This is the same technique as used with the log. To see how that works, ensure that the serial log level is set to LOG_DEBUG (recompile and upload the firmware if the level had to be changed), stop Domoticz, and press the button many times in quick succession. Quickly, the buffer will be filled and old requests will be dropped. Nevertheless, the LED will follow the state of the button because the hardware is now polled with a `Ticker`. Every 25 milliseconds (`POLL_TIME` is set in `hardware.h`), a hardware timer interrupt takes care of checking the state of the button and the sensors if need be. Since this is an interrupt, the button state is monitored even as an HTTP request might be in progress.
 
-The alternate hardware drivers, first shown in `03_alt_wifi_switch` have been updated and are contained in `hdw_alt/hardware.cpp'. This is a drop-in replacement for 'ticker_hdw/hardware.cpp'.
+The alternate hardware drivers, first shown in `03_alt_wifi_switch` have been updated and are contained in `hdw_alt/hardware.cpp`. This is a drop-in replacement for `ticker_hdw/hardware.cpp`. Note that now change is requires to the header file `hardware.h`.
 
 ## 09_with_cmd
 
@@ -124,21 +123,11 @@ This version continues segregating all configuration values that can be modified
 The important addition in this version is a command interpreter in `commands.hpp` and `commands.cpp`. Currently commands, which for the most part consist of viewing or changing the configuration at run-time, can be entered in the serial console or in the Web interface console.  There will not be a `Backlog` command à la Tasmota. Instead, multiple commands can be specified at once as long as they are separated by a ";".
 
 ```
-00:02:37.262 CMD/dbg: Commands from webc: help idx; help log; version
-00:02:37.262 CMD/dbg: parse "help idx"
-00:02:37.262 CMD/dbg: token 0 = "help"
-00:02:37.262 CMD/dbg: token 1 = "idx"
-00:02:37.262 CMD/inf: From webc: help idx
-00:02:37.262 CMD/inf: idx [-d] | [(switch|light|temp) [<value>]]
-00:02:37.262 CMD/dbg: parse "help log"
-00:02:37.262 CMD/dbg: token 0 = "help"
-00:02:37.262 CMD/dbg: token 1 = "log"
-00:02:37.262 CMD/inf: From webc: help log
-00:02:37.262 CMD/inf: log [-d] | [(uart|mqtt|syslog|web) [<level>]]
-00:02:37.262 CMD/dbg: parse "version"
-00:02:37.262 CMD/dbg: token 0 = "version"
-00:02:37.262 CMD/inf: From webc: version
-00:02:37.262 CMD/inf: Firmware version 0.0.3 (Apr 13 2023 00:14:54)
+00:02:53.737 CMD/inf: Command from webc: help config; config; idx; version
+00:02:53.737 CMD/inf: config [load|default|save [force]] | [auto (off|on)]
+00:02:53.738 CMD/inf: Config version: 1, size: 548, auto(save): on
+00:02:53.738 CMD/inf: Domoticz virtual Idx: switch = 1, light sensor = 3, temp + humid sensor = 2
+00:02:53.738 CMD/inf: Firmware version 0.0.5 (Apr 26 2023 21:51:48)
 ```
 
 This first version of the command interpreter is just a *proof of concept* and it will not be truly operational until the configuration can be saved to non-volatile memory and read back from it when the ESP32C3 boots. Right now, that seems the simplest way of a  change from dynamic IP address to a static IP address.
@@ -155,7 +144,7 @@ Added the <a href="https://github.com/ayushsharma82/AsyncElegantOTA" target="_bl
 
 ## Upcoming
 
-With version 0.0.5 (10_with_config), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but using dynamic IP address will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address. The obvious solution is to communicate with Domoticz with MQTT. So that will be the next step. Also some sort of Wi-Fi manager (either DIY or a library) would be a useful addition.
+With version 0.0.5 (10_with_config), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but using dynamic IP address will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address to the XIAO. The obvious solution is to communicate with Domoticz with MQTT. So that will be the next step. Also some sort of Wi-Fi manager (either DIY or a library) would be a useful addition.
 
 ## License
 
