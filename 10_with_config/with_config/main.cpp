@@ -19,7 +19,7 @@
 #endif
 
 
-/* It seems that the radios are turned off before  the shutdownHandler is called!
+/* It seems that the radios are turned off before the shutdownHandler is called!
 
 void shutdownHandler(void) {
   // use esp_register_shutdown_handler in setup()
@@ -34,9 +34,9 @@ void shutdownHandler(void) {
 */
 
 void espRestart(void) {
-  addToLogP(LOG_INFO, TAG_SYSTEM, PSTR("Restarting in 1 second"));
   if (configAutoSave)
     saveConfig(); // save configuration if changed
+  addToLogP(LOG_INFO, TAG_SYSTEM, PSTR("Restarting in 1 second"));
   flushLog();
   delay(1000);
   esp_restart();
@@ -74,10 +74,9 @@ void WiFiModule(void) {
     int seconds = (int) ((millis() - connectiontime)/1000);
     connectiontime = millis();
     wifiConnected = !wifiConnected;
-    if (wifiConnected) {
+    if (wifiConnected)
       addToLogPf(LOG_INFO, TAG_WIFI, PSTR("WiFi connected to %s as %s after %d seconds disconnected."),
         WiFi.SSID().c_str(), WiFi.localIP().toString().c_str(), seconds);
-    }
     else
       addToLogPf(LOG_INFO, TAG_WIFI, PSTR("WiFi disconnected after %d seconds connected"), seconds);
   }
@@ -93,7 +92,7 @@ void setup() {
 
   loadConfig();
 
-  wifiReconnect();
+  wifiConnect();
   webserversetup();
   initHardware();
 }
