@@ -7,7 +7,11 @@
 #define HOSTNAME         "kitchenlight"
 #define DEVICENAME       "Kitchen Light"
 
-//--- Default static IP data // not yet implemented
+//--- Default Wi-Fi network credentials
+#define WIFI_SSID         "MY_WIFI_NETWORK_NAME"
+#define WIFI_PSWD         "MY_WIFI_NETWORK_PASSWORD"
+
+//--- Default static IP data
 #define STA_STATIC_IP    "0.0.0.0"       // "0.0.0.0" means this device will get dynamic (dhcp) IP address
 #define STA_GATEWAY      "192.168.1.1"
 #define STA_NETMASK      "255.255.255.0"
@@ -37,7 +41,7 @@
 
 //--- Default hardware timing
 #define HDW_POLL_TIME    25       //25 ms, 50ms probably fast enough
-#define SENSOR_UPDT_TIME 120000   //2 minutes
+#define SENSOR_UPDT_TIME 240000   //4 minutes
 
 //--- Default Log levels
 #define LOG_LEVEL_UART    LOG_DEBUG
