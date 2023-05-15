@@ -5,6 +5,8 @@
 #include "user_config.h"
 #include "logging.h"
 
+// BUG - it is possible that strlcpy could truncate !!!
+//   see: https://en.wikibooks.org/wiki/C_Programming/C_Reference/nonstandard/strlcpy#Criticism
 
 config_t config;
 bool configAutoSave = true;
@@ -14,6 +16,11 @@ Preferences preferences;
 void defaultNames(void) {
   strlcpy(config.hostname, HOSTNAME, HOSTNAME_SZ);
   strlcpy(config.devname, DEVICENAME, HOST_SZ);
+}
+
+void defaultWifiNetwork() {
+  strlcpy(config.wifiSsid, WIFI_SSID, HOST_SZ);
+  strlcpy(config.wifiPswd, WIFI_PSWD, PSWD_SZ);
 }
 
 void defaultStaticStaIp(void) {
@@ -92,6 +99,7 @@ void useDefaultConfig(void) {
 
 // -- start of user settings
   defaultNames();
+  defaultWifiNetwork();
   defaultStaticStaIp();
   defaultSyslog();
   defaultDmtz();
@@ -151,6 +159,6 @@ void loadConfig(void) {
   if (!loadConfigFromNVS()) {
     useDefaultConfig();
     config.checksum = 0; // make sure it is saved to NVS when closing down
-    addToLogPf(LOG_INFO, TAG_CONFIG, PSTR("Using default config version %d, size %d"), config.version, sizeof(config_t));
+    addToLogPf(LOG_INFO, TAG_CONFIG, PSTR("Loaded default configuration version %d, size %d"), config.version, sizeof(config_t));
   }
 }

@@ -26,11 +26,11 @@ static const char* cmds[] = {
   "mqtt",           //  5 - mqtt host, port, user, pswd
   "name",           //  6 - hostname
   "restart",        //  7 - restart the device
-  "staip",          //  8 - static station IP //
-  "syslog",         //  9 - syslog url, port
-  "time",           // 10 - configure time intervals
-  "topic",          // 11 - mqtt topics
-  "version",        // 12 - returns firmware version
+  "staip",          //  8 - static station IP
+  "status",         //  9 - system status
+  "syslog",         // 10 - syslog url, port
+  "time",           // 11 - configure time intervals
+  "topic",          // 12 - mqtt topics
   "wifi"            // 13 - returns wifi status
 };
 
@@ -38,20 +38,20 @@ static const char* cmds[] = {
 #define COMMAND_COUNT (int)(sizeof (cmds) / sizeof (const char *))
 
 static const char *params[COMMAND_COUNT] = {
-  "[load|default|save [force]] | [auto (off|on)]",            // config
-  "[-d] | [<host> [<port>]] ( [-x] | [-c <user> [<pswd>]] )", // dmtz
-  "[<command>]",                                              // help
-  "[-d] | [(switch|temp|lux) [<id>]]",                        // idx
-  "[-d] | [(uart|mqtt|syslog|webc) [ERR|inf|dbg|<level>]]",   // log
-  "[-d] | [[<host> [<port>]] ( [-x] | [-c <user> <pswd>]] )", // mqtt
-  "[-d] | [-h [<hostname>]] | [-n [<device name>]]",          // name
-  "[[0|1|2]",                                      // restart
-  "[-d|-x] | [<ip> <gateway> <mask>]",             // statip
-  "[-d] | [<hostIP> [<port>]]",                    // syslog
-  "[-d] | [(poll|update|connect) [<ms>]]",         // time
-  "[-d] | [(in|out) [<topic>]]",                   // topic
-  "",                                              // version
-  "[-x|-r] | [<ssid> [<pswd]]"                     // wifi
+  /* config  */ "[load|default|save [force]] | [auto (off|on)]",
+  /* dmtz    */ "[-d] | [<host> [<port>]] ( [-x] | [-c <user> [<pswd>]] )",
+  /* help    */ "[<command>]",
+  /* idx     */ "[-d] | [(switch|temp|lux) [<id>]]",
+  /* log     */ "[-d] | [(uart|mqtt|syslog|webc) [ERR|inf|dbg|<level>]]",
+  /* mqtt    */ "[-d] | [[<host> [<port>]] ( [-x] | [-c <user> <pswd>]] )",
+  /* name    */ "[-d] | [-h [<hostname>]] | [-n [<device name>]]",
+  /* restart */ "[[0|1|2]",
+  /* staip   */ "[-d|-x] | [<ip> <gateway> <mask>]",
+  /* status  */  "",
+  /* syslog  */ "[-d] | [<hostIP> [<port>]]",
+  /* time    */ "[-d] | [(poll|update|connect) [<ms>]]",
+  /* topic   */ "[-d] | [(in|out) [<topic>]]",
+  /* wifi    */ "[-d] | [<ssid> [<pswd]]"
 };
 
 #define TOKENCOUNT 7             // one more than the maximum number of tokens used
@@ -625,11 +625,9 @@ cmndError_t doRestart(int count, int &errIndex) {
 cmndError_t doStaip(int count, int &errIndex) {
   cmndError_t errCode = etNone;
   errIndex = 0;
-  bool restartMessage = false;
   if (count > 1) {
     if (token[1].equals("-d")) {
       defaultStaticStaIp();
-      restartMessage = true;
       if (count > 2  ) {
         errIndex = 2;
         errCode = etExtraParam;
@@ -639,7 +637,6 @@ cmndError_t doStaip(int count, int &errIndex) {
       config.staStaticIP = 0;
       config.staNetmask = 0;
       config.staGateway = 0;
-      restartMessage = true;
       if (count > 2  ) {
         errIndex = 2;
         errCode = etExtraParam;
@@ -670,7 +667,6 @@ cmndError_t doStaip(int count, int &errIndex) {
         config.staStaticIP = ipa;
         config.staGateway = gateway;
         config.staNetmask = mask;
-        restartMessage = true;
         if (count > 4) {
           errCode = etExtraParam;
           errIndex = 4;
@@ -686,12 +682,28 @@ cmndError_t doStaip(int count, int &errIndex) {
       IPAddress(config.staNetmask).toString().c_str());
   else
     addToLogP(LOG_INFO, TAG_COMMAND, PSTR("Using DHCP obtained IP address"));
-  if (restartMessage)
+  if (count > 1)
     addToLogP(LOG_INFO, TAG_COMMAND, PSTR("Any change will take effect on the next connection to the network"));
 
   return errCode;
 }
 
+
+#define APP_NAME "Firmware"
+//
+//     1      2  <<< count
+//     0      1  <<< index
+//  status  extra
+//
+cmndError_t doStatus(int count, int &errIndex) {
+  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("%s version %s"), APP_NAME, FirmwareVersionToString().c_str());
+  wifiLogStatus();
+  if (count > 1)  {
+    errIndex = 1;
+    return etExtraParam;
+  }
+  return etNone;
+}
 
 void showSyslog(void) {
   addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Syslog host: %s, port: %d"),
@@ -812,48 +824,41 @@ cmndError_t doTopic(int count, int &errIndex) {
 }
 
 
-#define APP_NAME "Firmware"
-//
-//     1      2  <<< count
-//     0      1  <<< index
-//  version  extra
-//
-cmndError_t doVersion(int count, int &errIndex) {
-  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("%s version %s"), APP_NAME, FirmwareVersionToString().c_str());
-  if (count > 1)  {
-    errIndex = 1;
-    return etExtraParam;
-  }
-  return etNone;
-}
-
-//   1        2       3        2      3         4      <<< count
-//   0        1       2        1      2         3      <<< index
-//  wifi  [-x|-r] xtra1 | [<ssid> [<pswd>]]  xtra2
+//   1     2     3        2      3         4      <<< count
+//   0     1     2        1      2         3      <<< index
+//  wifi  [-d] xtra1 | [<ssid> [<pswd>]]  xtra2
 //
 cmndError_t doWifi(int count, int &errIndex) {
-  errIndex = 2;
-  //cmndError_t errCode = etNone;
+  errIndex = 2; // assume xtra1
 
   if (count > 1) {
-    if (token[1].equals("-x") || token[1].equals("-X"))
-      wifiDisconnect();
-    else if ((token[1].equals("-r")) || token[1].equals("-R"))
-      wifiReconnect();
+    if ((token[1].equals("-d")) || token[1].equals("-D"))
+      defaultWifiNetwork;
     else {
       if (count < 3)
         token[2] = "";
-      else
-        errIndex = 3;
-      wifiConnect(token[1], token[2]);
+      else if (token[2].length() < 8)
+        return etInvalidValue;
+      errIndex = 3; // assume xtra2
+      strlcpy(config.wifiSsid, token[1].c_str(), HOST_SZ);
+      strlcpy(config.wifiPswd, token[2].c_str(), PSWD_SZ);
     }
   }
-  wifiLogStatus();
+
+  token[2] = config.wifiPswd;
+  if (token[2].length() < 1)
+    token[2] = "<none>";
+  else if (token[2].length() < 8)
+    token[2] = "<too short>";
+  else for (int i=0; i < token[2].length(); i++)
+    token[2].setCharAt(i, '*');
+  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Wi-Fi SSID: %s, password: %s"), config.wifiSsid, token[2].c_str());
 
   if (count > errIndex)
     return etExtraParam;
   return etNone;
 }
+
 
 // --------------------------------------------------
 
@@ -870,10 +875,10 @@ dofnct doFunctionList[COMMAND_COUNT] = {
   doName,
   doRestart,
   doStaip,
+  doStatus,
   doSyslog,
   doTime,
   doTopic,
-  doVersion,
   doWifi
 };
 

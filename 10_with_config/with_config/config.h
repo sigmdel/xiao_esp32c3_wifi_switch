@@ -25,6 +25,9 @@ struct config_t {
   char hostname[HOSTNAME_SZ];     // this device host name
   char devname[HOST_SZ];          // this device name in Web interface
 
+  char wifiSsid[HOST_SZ];         // WiFi network name
+  char wifiPswd[PSWD_SZ];         // WiFi network password
+
   uint32_t staStaticIP;           // Static IP, set to 0 for dhcp
   uint32_t staGateway;            //
   uint32_t staNetmask;            //
@@ -64,6 +67,7 @@ struct config_t {
 };
 
 void defaultNames(void);
+void defaultWifiNetwork(void);
 void defaultStaticStaIp(void);
 void defaultDmtz(void);
 void defaultIdx(void);
