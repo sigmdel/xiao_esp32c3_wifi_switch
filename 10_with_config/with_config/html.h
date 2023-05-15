@@ -74,6 +74,12 @@ https://github.com/me-no-dev/ESPAsyncWebServer/issues/1249#issuecomment-13427814
   .button{display: inline-block; background-color: blue; border: none; border-radius: 6px; color: white; font-size: 1.5rem; width: 18em; height: 3em; text-decoration: none; margin: 2px; cursor: pointer;}
 
 */
+
+// [ ] NOTE: https://www.w3schools.com/js/js_timing.asp, using window.setTimeout(function, milliseconds) to try to reload page after restart?
+// [ ] NOTE: https://www.w3schools.com/js/js_window_location.asp, to set the page to reload
+
+// [ ] Note: https://stackoverflow.com/questions/60076905/how-to-share-a-websocket-connection-between-different-html-pages
+
 const char html_index[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML>
 <html>
@@ -113,39 +119,39 @@ const char html_index[] PROGMEM = R"rawliteral(
     xhr.open("GET", "/toggle", true);
     xhr.send();
   }
-  if (!!window.EventSource) {
+  if (!Boolean(EventSource)) {
+    alert("Error: Server-Sent Events are not supported in your browser");
+  } else {
+
+    if (Boolean(source)) {
+      console.log("Closing source which is already defined");
+      source.close();
+    }
+
     var source = new EventSource('/events');
 
     source.addEventListener('open', function(e) {
-    console.log("Events Connected");
-    }, false);
+      console.log("Events Connected"); });
 
     source.addEventListener('error', function(e) {
-    if (e.target.readyState != EventSource.OPEN) {
-      console.log("Events Disconnected");
-    }
-    }, false);
+      if (e.target.readyState != EventSource.OPEN) {
+        console.log("Events Disconnected");} });
 
     source.addEventListener('relaystate', function(e) {
-    console.log("relaystate", e.data);
-    document.getElementById("relayID").innerHTML = e.data;
-    }, false);
+      console.log("relaystate", e.data);
+      document.getElementById("relayID").innerHTML = e.data; });
 
     source.addEventListener('tempvalue', function(e) {
-    console.log("tempvalue", e.data);
-    document.getElementById("temperatureID").innerHTML = e.data;
-    }, false);
+      console.log("tempvalue", e.data);
+      document.getElementById("temperatureID").innerHTML = e.data; });
 
     source.addEventListener('humdvalue', function(e) {
-    console.log("humdvalue", e.data);
-    document.getElementById("humidityID").innerHTML = e.data;
-    }, false);
+      console.log("humdvalue", e.data);
+      document.getElementById("humidityID").innerHTML = e.data; });
 
     source.addEventListener('brightvalue', function(e) {
-    console.log("ligthvalue", e.data);
-    document.getElementById("brightnessID").innerHTML = e.data;
-    }, false);
-
+      console.log("ligthvalue", e.data);
+      document.getElementById("brightnessID").innerHTML = e.data; });
   }
   </script></body>
 </html>)rawliteral";
@@ -223,27 +229,30 @@ const char html_console[] PROGMEM = R"rawliteral(
       xhr.send();
       cmdinput.value = "";
 	  }
-    if (!!window.EventSource) {
-      var source2 = new EventSource('events');
-
-      source2.addEventListener('open', function(e) {
-      console.log("Events Connected to source2");
-      }, false);
-
-      source2.addEventListener('error', function(e) {
-      if (e.target.readyState != EventSource.OPEN) {
-        console.log("Events Disconnected from source2");
+    if (!Boolean(EventSource)) {
+      alert("Error: Server-Sent Events are not supported in your browser");
+    } else {
+      if (Boolean(source)) {
+        console.log("Closing source which is already defined");
+        source.close();
       }
-      }, false);
 
-      source2.addEventListener('logvalue', function(e) {
-      console.log("logvalue", e.data);
-      ta = document.getElementById("log")
-      ta.innerHTML += e.data + "\n";
-      ta.scrollTop = ta.scrollHeight;
-      }, false);
+      var source = new EventSource('events');
+
+      source.addEventListener('open', function(e) {
+        console.log("Events Connected to source"); });
+
+      source.addEventListener('error', function(e) {
+        if (e.target.readyState != EventSource.OPEN) {
+          console.log("Events Disconnected from source");} });
+
+      source.addEventListener('logvalue', function(e) {
+        console.log("logvalue", e.data);
+        ta = document.getElementById("log")
+        ta.innerHTML += e.data + "\n";
+        ta.scrollTop = ta.scrollHeight; });
     }
- </script
+  </script
 </body>
 </html>)rawliteral";
 
