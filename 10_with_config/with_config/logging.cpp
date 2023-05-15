@@ -1,6 +1,5 @@
 
 #include <Arduino.h>
-//#include <esp32-hal-log.h>
 #include "ESPAsyncWebServer.h"  // for AsyncEventSource
 #include "IPAddress.h"
 #include "AsyncUDP.h"
@@ -66,6 +65,8 @@ uint8_t validcount = 0;           // Number of valid messages in the buffer, use
 
 
 void addToLog(Log_level level, Log_tag  tag, const char *line ) {
+
+  //Serial.printf("addToLog at head: %d, tail: %d, count (to send): %d, validcount: %d\n", head, tail, count, validcount);
   // save the entry plus the current millisecond count
   LogTime[head] = millis();
   LogLevel[head] = level;
@@ -80,6 +81,8 @@ void addToLog(Log_level level, Log_tag  tag, const char *line ) {
   }
   if (validcount < LOG_SIZE)    // Increment the number of valid messages up to the size of slots in the buffer
     validcount++;               // Only used in the
+
+  //Serial.printf("addToLog done with head: %d, tail: %d, count (to send): %d, validcount: %d, LOG_SIZE: %d\n", head, tail, count, validcount, LOG_SIZE);
 }
 
 void addToLogf(Log_level level, Log_tag tag, const char *format, ...) {
@@ -152,7 +155,8 @@ int sendLog(void) {
     //Serial.flush(); don't do this - uart logging will be blocking, espcially if no serial connection
   }
 
-  if (level <= config.logLevelWebc) {
+  if (level <= config.logLevelWebc && (wifiConnected)) {
+    //dbg:: Serial.println("log sending to webc");
     events.send(message.c_str(),"logvalue");
   }
 
@@ -176,17 +180,21 @@ void flushLog(void) {
   // send out any queued messages;
   while (count) {
     sendLog();
-    delay(10);
+    delay(50);  // needed ??
   }
 }
 
 String logHistory(void) {
+  //Serial.printf("logHistory, validcount: %d\n", validcount);
   char mxtime[15];
   String hist;
   String msg;
   if (validcount > 0) {
     int j = (validcount < LOG_SIZE) ? 0 : head;
+    //Serial.printf("  - starting j: %d, head: %d\n", j, head);
+    //Serial.print("  j: ");
     for (int i=0; i<validcount; i++) {
+      //Serial.printf("%d, ", j);
       if (LogLevel[j] <= config.logLevelWebc) {
         //[ ] TODO refactor following !
         mstostr(LogTime[j], mxtime, sizeof(mxtime));
@@ -200,6 +208,7 @@ String logHistory(void) {
       }
       j = (j+1) % LOG_SIZE;
     }
+    //Serial.printf("\n  - starts with %s\n", hist.substring(0, 64).c_str());
   }
   return hist;
 }
