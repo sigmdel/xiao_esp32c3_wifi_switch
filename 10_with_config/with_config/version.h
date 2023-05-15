@@ -22,7 +22,7 @@
 
 #define VERSION_MAJOR 0
 #define VERSION_MINOR 0
-#define VERSION_BUILD 5
+#define VERSION_BUILD 6
 
 union Version_t {
   uint8_t Data[3];

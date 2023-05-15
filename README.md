@@ -1,13 +1,13 @@
 # xiao_esp32c3_wifi_switch
 
-***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.5*)
+***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.6*)
 
 Source code that accompanies **A Wi-Fi Switch for Domoticz using a XIAO ESP32C3:**
 
    + [*Part 1 - Demonstration Projects*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)
    + [*Part 2 - Asynchronious Web Page Updates*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html)
    + *Part 3 - Better User Experience...* 
-   + [*Part 4 - Commands*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_4_en.html)
+   + [*Part 4 - Commands - version 0.0.6*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_4_en.html)
 
 ## Overview of the Wi-Fi Switch
 
@@ -134,9 +134,9 @@ This first version of the command interpreter is just a *proof of concept* and i
 
 ## 10_with_config
 
-Added saving to and loading from NVS of the user-defined configuration. With improvements and a revamped ESP restart command, the command interpreter is now working properly. There is a new `wifi` command that can be used to disconnect from the wireless network and then reconnect either to the previously used Wi-Fi access point or to a new one. A new unit `wifiutils` takes care of the details. 
+The user-defined configuration can be saved to or loaded from non-volatile storage (NVS). With improvements and a revamped ESP restart command, the command interpreter is now working properly. In version 0.0.6, the new unit `wifiutils` which takes care of the network details has been simplified. 
 
-Changing from static IP to a dynamic IP with `staip` can now be done without restarting the ESP32. For that reason, there is no reason to keep `secrets.h` and `secrets.h.template` which have been removed from the project.
+Network configuration is handled with two commands: a new `wifi` command used to specify the Wi-Fi access point and the `staip` command to choose between getting a dynamic IP address from the network DHCP server or using a static IP address. Changes to the configuration with these two commands have no effect until the device is restarted. There is no reason to keep `secrets.h` and `secrets.h.template` since network credentials are now included in the configuration . 
 
 The list of command and their syntax can be found in [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 4: Commands](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_4_en.html). This is still very much a work in progress, so commands will be added and changes to existing commands may be made. Also, the command interpreter needs much reworking. It's as if each command is parsed with a different approach in an attempt to find a common approach that could be used in all cases. 
 
@@ -144,7 +144,7 @@ Added the <a href="https://github.com/ayushsharma82/AsyncElegantOTA" target="_bl
 
 ## Upcoming
 
-With version 0.0.5 (10_with_config), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but using dynamic IP address will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address to the XIAO. The obvious solution is to communicate with Domoticz with MQTT. So that will be the next step. Also some sort of Wi-Fi manager (either DIY or a library) would be a useful addition.
+With version 0.0.6 (10_with_config), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but using dynamic IP address will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address to the XIAO. The obvious solution is to communicate with Domoticz with MQTT. So that will be the next step. Also some sort of Wi-Fi manager (either DIY or a library) would be a useful addition.
 
 ## License
 
