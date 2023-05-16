@@ -705,6 +705,7 @@ cmndError_t doStatus(int count, int &errIndex) {
   return etNone;
 }
 
+
 void showSyslog(void) {
   addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Syslog host: %s, port: %d"),
     IPAddress(config.syslogIP).toString().c_str(), config.syslogPort);
@@ -833,7 +834,7 @@ cmndError_t doWifi(int count, int &errIndex) {
 
   if (count > 1) {
     if ((token[1].equals("-d")) || token[1].equals("-D"))
-      defaultWifiNetwork;
+      defaultWifiNetwork();
     else {
       if (count < 3)
         token[2] = "";
