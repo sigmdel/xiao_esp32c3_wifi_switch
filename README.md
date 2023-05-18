@@ -92,7 +92,7 @@ This project is described in section 3 of [A Wi-Fi Switch for Domoticz using a X
 
 > ### About the last 3 xxx_update projects
 >
-> They present 3 techniques that could be used to update the information displayed on the Web page without reloading the page itself as done in the first three projects. While Tasmota uses AJAX, and Websockets probably represent the most powerful technique, Server-Sent Events and AJAX will be used starting in <code>08_ticker_hdw</code>.
+> They present 3 techniques that could be used to update the information displayed on the Web page without reloading the page itself as done in the first three projects. While Tasmota uses AJAX, and Websockets probably represent the most powerful technique, Server-Sent Events and AJAX will be used starting in `08_ticker_hdw`.
 
 <!-- 
 https://stackoverflow.com/questions/5195452/websockets-vs-server-sent-events-eventsource/5326159
@@ -144,20 +144,20 @@ Added the <a href="https://github.com/ayushsharma82/AsyncElegantOTA" target="_bl
 
 ## 11_with_wm
 
-A Wi-Fi manager is added. Well, that's a bit pretentious; only an alternate root Web is provided. When the Wi-Fi switch has lost the connection to the wireless network for more than a specified time interval (5 minutes as defined in the default user configuration), it starts an access point. It will be necessary to log onto that new Wi-Fi network, named <code>KITCHENLIGHT-AP</code> with <code>12345678</code> as a password, to open the Web server to get access to a form used to specify the Wi-Fi credentials and from there try to connect to the Wi-Fi network. As soon as a Wi-Fi connection is established, the access point is brought down.
+A Wi-Fi manager is added. Well, that's a bit pretentious; only an alternate root Web is provided. When the Wi-Fi switch has lost the connection to the wireless network for more than a specified time interval (5 minutes as defined in the default user configuration), it starts an access point. It will be necessary to log onto that new Wi-Fi network, named `KITCHENLIGHT-AP` with `12345678` as a password, to open the Web server to get access to a form used to specify the Wi-Fi credentials and from there try to connect to the Wi-Fi network. As soon as a Wi-Fi connection is established, the access point is brought down.
 
 This required adding two new commands 
 
-  - <code>ap</code> to manage the access point name and password
-  - <code>apip</code> to manage the access point IP address and subnet mask
+  - `ap` to manage the access point name and password
+  - `apip` to manage the access point IP address and subnet mask
 
-and modifying the <code>time</code> command, adding the <code>ap</code> parameter to set the disconnection time interval before starting the access point.
+and modifying the `time` command by inserting the `ap` parameter to set the disconnection time interval before starting the access point.
 
-The corresponding fields had to be added to the configuration structure <codd>config_t</code>. Also, three Web pages were added in <code>html.h</code> not just one and two functions were appended to <code>wifiutils</code> to start and stop the access point. Starting and stopping the access point is done in the <code>WiFiModule</code> in <code>main.cpp</code>.
+The corresponding fields had to be added to the configuration structure `config_t`. Also, three Web pages were added in `html.h` not just one and two functions were appended to `wifiutils` to start and stop the access point. Starting and stopping the access point is done in the `WiFiModule` in `main.cpp`.
 
-When connected to the wireless network started by the Wi-Fi switch, it is possible to get access to the main Web page at <code>192.168.4.1/index.html</code> (or whatever the AP's IP address is). That way, the relay can be turned on or off, the sensor values will be updated and the firmware can be updated. Unfortunately, the console is not updated although commands entered at the console do work. If one prefers to have a completely separate Wi-Fi manager, then look at <code>this does not seem right, then look at <code>webserver_xl/webserver.cpp</code>.
+When connected to the wireless network started by the Wi-Fi switch, it is possible to get access to the main Web page at `192.168.4.1/index.html` (or whatever the AP's IP address is). That way, the relay can be turned on or off, the sensor values will be updated and the firmware can be updated. The Wi-Fi switch configuration can also be modified with the Web console. If one prefers to have a completely separate Wi-Fi manager, then look at `webserver_xl/webserver.cpp`.
 
-For some reason, it is very difficult to connect to the access point with my desktop (Linux Mint 20.1 with a 5.15.0-72-generic kernel) if the wireless interface has been connected at a Wi-Fi network before hand. Turning off and then back on the radio usually solves that problem.
+For some reason, it can be difficult to connect my desktop computer (Linux Mint 20.1 with a 5.15.0-72-generic kernel) to the access point.  Sometimes, turning the radio off, and then back on, can solve that problem.
 
 ```bash
 $ sudo nmcli radio wifi off
@@ -165,12 +165,42 @@ $ sudo lshw -C network
 $ sudo nmcli radio wifi on
 ```
 
-The <code>lshw</code> is used to verify that the interface is actually off. Interestingly, that problem is not encountered with Android devices.
+The `lshw` is used to verify that the interface is actually off. When this trick does not seem to work even after a number of tries, I find that connecting to the home Wi-Fi network, waiting until an IP version 4 address is assigned to the computer Wi-Fi interface and then closing the connection seems to "prime" the wireless interface. If all this fails, then the desktop can be rebooted and it usually does not have problem connecting to the XIAO access point if it is the first wireless network used. That is obviously a tedious method that grows old very quickly. It's all very frustrating but, interestingly, that problem is not encountered when I use Android devices.
+
+<!--
+
+```
+michel@hp:~$ ip a
+...
+5: wlp5s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether bb:cc:dd:00:11:22 brd ff:ff:ff:ff:ff:ff
+    inet6 abcd::4567:3456:2345:bcde/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+...       
+michel@hp:~$ ip a
+...
+5: wlp5s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether bb:cc:dd:00:11:22 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.10.106/24 brd 192.168.10.255 scope global dynamic noprefixroute wlp5s0
+       valid_lft 259194sec preferred_lft 259194sec
+    inet6 abcd::4567:3456:2345:bcde/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+```
+
+```
+michel@hp:~$ ip a
+...
+5: wlp5s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether bb:cc:dd:00:11:22 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.4.2/24 brd 192.168.4.255 scope global dynamic noprefixroute wlp5s0
+       valid_lft 259194sec preferred_lft 259194sec
+```
+-->
 
 
 ## Upcoming
 
-With version 0.0.7 (11_with_wm), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but using dynamic IP address will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address to the XIAO. The obvious solution is to communicate with Domoticz with MQTT. So that will be the next step.
+With version 0.0.7 (11_with_wm), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but the alternative, using dynamically assigned IP address, will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address to the XIAO. The obvious solution is to communicate with Domoticz through MQTT messaging. So that will be the next step.
 
 ## License
 

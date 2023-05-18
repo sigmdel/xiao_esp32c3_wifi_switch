@@ -3,8 +3,7 @@
 #include <Arduino.h>
 
 /*
-   Syslog priority levels
-
+Syslog priority levels
    LOG_EMERG = 0,      // system is unusable, index = 0 just to be sure
    LOG_ALERT = 1,      // action must be taken immediately
    LOG_CRIT = 2,       // critical conditions
@@ -13,9 +12,8 @@
    LOG_NOTICE = 5,     // normal but significant condition
    LOG_INFO = 6,       // informational
    LOG_DEBUG = 7,      // debug-level messages
-
-   However only 3 will be used here
- */
+However only 3 will be used here:
+*/
 
 enum Log_level {
    LOG_ERR = 0,    // error conditions
@@ -25,17 +23,16 @@ enum Log_level {
 };
 
 extern bool wifiConnected;
-//extern const char *logLevelString[LOG_LEVEL_COUNT];
 
 enum Log_tag {
   TAG_UNDEF = 0, // "???"
-  TAG_SYSTEM,    // "SYS"  // setup
-  TAG_CONFIG,    // "CFG"
-  TAG_HARDWARE,  // "HDW"
-  TAG_WIFI,      // "WIF"
-  TAG_MQTT,      // "MQT"
-  TAG_WEBSERVER, // "WEB"
-  TAG_DOMOTICZ,  // "DMZ"
+  TAG_SYSTEM,    // "SYS"  main.cpp
+  TAG_CONFIG,    // "CFG"  config.cpp
+  TAG_HARDWARE,  // "HDW"  hardware.cpp
+  TAG_WIFI,      // "WIF"  main.cpp
+  TAG_MQTT,      // "MQT"  NOT YET IMPLEMENTED
+  TAG_WEBSERVER, // "WEB"  webserver.cpp
+  TAG_DOMOTICZ,  // "DMZ"  domoticz.cpp
   TAG_COUNT      // number of tags
 };
 
@@ -64,19 +61,16 @@ enum Log_tag {
  */
 
   // Typical use: sendToLog(LOG_INFO, TAG_SYSTEM, "Some information");
-void addToLog(Log_level level, Log_tag tag, const char *line );
+void addToLog(Log_level level, Log_tag tag, const char *message);
 
   // Typical use: sendToLogf(LOG_INFO, TAG_HARDWARE, "Count: %d, free: %d at %s", 32, 12498, "some_string");
 void addToLogf(Log_level level, Log_tag tag, const char *format, ...);
 
   // Typical use: sendToLogP(LOG_ERR, TAG_SYSTEM, PSTR("Fatal Error"));
-void addToLogP(Log_level level, Log_tag tag, const char *line);
-
-  // Typical use: sendToLogP(LOG_ERR, TAG_HARDWARE, PSTR("Fatal Error"), PSTR("REBOOTING"));
-void addToLogP(Log_level level, Log_tag tag, const char *linep1, const char *linep2);
+void addToLogP(Log_level level, Log_tag tag, const char *message);
 
   // Typical use: sendToLogPf(LOG_DEBUG, TAG_MQTT, PSTR("Count: %d, free: %d at %s"), 32, 12498, "some_string");
-void addToLogPf(Log_level level, Log_tag tag, const char *pline, ...);
+void addToLogPf(Log_level level, Log_tag tag, const char *format, ...);
 
   // Transmits the oldest message in the log buffer not already sent.
   // Call in the loop() when it should be safe to access the Serial device, etc.
@@ -84,6 +78,6 @@ int sendLog(void);
 
 void mstostr(unsigned long milli, char* sbuf, int sbufsize);
 
-// Returns the content of the log from the oldes entry to the newest
+// Returns the content of the log from the oldest entry to the newest
 // in one string where each entry is terminated with a line feed.
 String logHistory(void);

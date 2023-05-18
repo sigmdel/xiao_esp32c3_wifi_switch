@@ -34,6 +34,11 @@ String processor(const String& var){
   if (var == "BRIGHTNESS") return Brightness;
   if (var == "RELAYSTATE") return RelayState;
   if (var == "LOG") return logHistory();
+  /* for debugging size of log {
+    String test = logHistory();
+    Serial.printf("logHistory.length: %d, starts with: %s\n", test.length(), test.substring(0, 64).c_str());
+    return test;
+  } */
   if (var == "INFO") return String("Using AsyncWebServer, AJAX and Server-Sent Events (SSE)");
   // [ ] TODO - returning var instead may be the solution to % in headers - see note in ?
   //   That does not work because starting % and ending %  get stripped

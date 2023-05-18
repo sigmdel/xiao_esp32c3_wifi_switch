@@ -51,6 +51,7 @@ const char *tagString[TAG_COUNT] = {
 
 
 #define LOG_SIZE 64                // Max number of lines in log
+#define MSG_SIZE 250               // Maximum size of formatted message
 
 // Log ring
 String        Log[LOG_SIZE];       // for log messages
@@ -64,14 +65,13 @@ uint8_t count = 0;                // Number of messages yet to be sent out
 uint8_t validcount = 0;           // Number of valid messages in the buffer, used for logHistory only
 
 
-void addToLog(Log_level level, Log_tag  tag, const char *line ) {
-
+void addToLog(Log_level level, Log_tag  tag, const char *message) {
   //Serial.printf("addToLog at head: %d, tail: %d, count (to send): %d, validcount: %d\n", head, tail, count, validcount);
   // save the entry plus the current millisecond count
   LogTime[head] = millis();
   LogLevel[head] = level;
   LogTag[head] = tag;
-  Log[head] = line;
+  Log[head] = message;
 
   head = (head + 1) % LOG_SIZE; // Advance head to the next slot in the ring buffer
   count++;                      // Increment the count of messages yet to be sent out
@@ -87,34 +87,36 @@ void addToLog(Log_level level, Log_tag  tag, const char *line ) {
 
 void addToLogf(Log_level level, Log_tag tag, const char *format, ...) {
   va_list args;
-  char line[250];
+  char msg[MSG_SIZE];
   va_start(args, format);
-  vsnprintf(line, 250, format, args);
+  vsnprintf(msg, MSG_SIZE, format, args);
   va_end(args);
-  addToLog(level, tag, line);
-}
-
-void addToLogP(Log_level level, Log_tag tag, const char *line) {
-  char msg[LOGSZ];
-  strcpy_P(msg, line);
   addToLog(level, tag, msg);
 }
 
-void addToLogP(Log_level level, Log_tag tag, const char *linep1, const char *linep2) {
-  char msg[LOGSZ];
-  char msg2[LOGSZ];
-  strcpy_P(msg, linep1);
-  strcpy_P(msg2, linep2);
+void addToLogP(Log_level level, Log_tag tag, const char *message) {
+  char msg[MSG_SIZE];
+  strcpy_P(msg, message);
+  addToLog(level, tag, msg);
+}
+
+/* not needed in this project
+void addToLogP(Log_level level, Log_tag tag, const char *message1, const char *message2) {
+  char msg[MSG_SIZE];
+  char msg2[MSG_SIZE];
+  strcpy_P(msg, message1);
+  strcpy_P(msg2, message2);
   strncat(msg, msg2, sizeof(msg)-1);
   addToLog(level, tag, msg);
 }
+*/
 
-void addToLogPf(Log_level level, Log_tag tag, const char *pline, ...) {
+void addToLogPf(Log_level level, Log_tag tag, const char *format, ...) {
   va_list args;
-  char msg[LOGSZ];
-  char msg2[LOGSZ];
-  strcpy_P(msg, pline);
-  va_start(args, pline);
+  char msg[MSG_SIZE];
+  char msg2[MSG_SIZE];
+  strcpy_P(msg, format);
+  va_start(args, format);
   vsnprintf(msg2, sizeof(msg2), msg, args);
   va_end(args);
   addToLog(level, tag, msg2);
@@ -152,10 +154,10 @@ int sendLog(void) {
 
   if (level <= config.logLevelUart) {
     Serial.printf("%s\n", message.c_str());
-    //Serial.flush(); don't do this - uart logging will be blocking, espcially if no serial connection
+    //Serial.flush(); don't do this - uart logging will be blocking, especially if Serial not opened
   }
 
-  if (level <= config.logLevelWebc && (wifiConnected)) {
+  if (level <= config.logLevelWebc) {
     //dbg:: Serial.println("log sending to webc");
     events.send(message.c_str(),"logvalue");
   }
