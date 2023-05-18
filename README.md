@@ -1,6 +1,6 @@
 # xiao_esp32c3_wifi_switch
 
-***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.6*)
+***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.7*)
 
 Source code that accompanies **A Wi-Fi Switch for Domoticz using a XIAO ESP32C3:**
 
@@ -142,9 +142,35 @@ The list of command and their syntax can be found in [A Wi-Fi Switch for Domotic
 
 Added the <a href="https://github.com/ayushsharma82/AsyncElegantOTA" target="_blank">AsyncElegantOTA</a> library by Ayush Sharma. It is not how I usually handle over-the-air updates, but it was very simple to add and does handle authentication if that is required. 
 
+## 11_with_wm
+
+A Wi-Fi manager is added. Well, that's a bit pretentious; only an alternate root Web is provided. When the Wi-Fi switch has lost the connection to the wireless network for more than a specified time interval (5 minutes as defined in the default user configuration), it starts an access point. It will be necessary to log onto that new Wi-Fi network, named <code>KITCHENLIGHT-AP</code> with <code>12345678</code> as a password, to open the Web server to get access to a form used to specify the Wi-Fi credentials and from there try to connect to the Wi-Fi network. As soon as a Wi-Fi connection is established, the access point is brought down.
+
+This required adding two new commands 
+
+  - <code>ap</code> to manage the access point name and password
+  - <code>apip</code> to manage the access point IP address and subnet mask
+
+and modifying the <code>time</code> command, adding the <code>ap</code> parameter to set the disconnection time interval before starting the access point.
+
+The corresponding fields had to be added to the configuration structure <codd>config_t</code>. Also, three Web pages were added in <code>html.h</code> not just one and two functions were appended to <code>wifiutils</code> to start and stop the access point. Starting and stopping the access point is done in the <code>WiFiModule</code> in <code>main.cpp</code>.
+
+When connected to the wireless network started by the Wi-Fi switch, it is possible to get access to the main Web page at <code>192.168.4.1/index.html</code> (or whatever the AP's IP address is). That way, the relay can be turned on or off, the sensor values will be updated and the firmware can be updated. Unfortunately, the console is not updated although commands entered at the console do work. If one prefers to have a completely separate Wi-Fi manager, then look at <code>this does not seem right, then look at <code>webserver_xl/webserver.cpp</code>.
+
+For some reason, it is very difficult to connect to the access point with my desktop (Linux Mint 20.1 with a 5.15.0-72-generic kernel) if the wireless interface has been connected at a Wi-Fi network before hand. Turning off and then back on the radio usually solves that problem.
+
+```bash
+$ sudo nmcli radio wifi off
+$ sudo lshw -C network       
+$ sudo nmcli radio wifi on
+```
+
+The <code>lshw</code> is used to verify that the interface is actually off. Interestingly, that problem is not encountered with Android devices.
+
+
 ## Upcoming
 
-With version 0.0.6 (10_with_config), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but using dynamic IP address will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address to the XIAO. The obvious solution is to communicate with Domoticz with MQTT. So that will be the next step. Also some sort of Wi-Fi manager (either DIY or a library) would be a useful addition.
+With version 0.0.7 (11_with_wm), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but using dynamic IP address will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address to the XIAO. The obvious solution is to communicate with Domoticz with MQTT. So that will be the next step.
 
 ## License
 
