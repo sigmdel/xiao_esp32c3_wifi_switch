@@ -1,6 +1,5 @@
 
 #include <Arduino.h>
-//#include <esp32-hal-log.h>
 #include "ESPAsyncWebServer.h"  // for AsyncEventSource
 #include "IPAddress.h"
 #include "AsyncUDP.h"
@@ -134,13 +133,13 @@ int sendLog(void) {
   char mxtime[15];
   mstostr(LogTime[tail], mxtime, sizeof(mxtime));
 
+
+  uint8_t level = LogLevel[tail];
   // message = "[tag]: logmessage";
   String message = " [";
   message += tagString[LogTag[tail]];
   message += "]: ";
   message += Log[tail];
-
-  uint8_t level = LogLevel[tail];
 
   if ((level <= config.logLevelSyslog) && (wifiConnected))  {
     String msg = config.hostname + message;
@@ -155,7 +154,7 @@ int sendLog(void) {
 
   if (level <= config.logLevelUart) {
     Serial.printf("%s\n", message.c_str());
-    //Serial.flush(); don't do this - uart logging will be blocking, espcially if Serial not opened
+    //Serial.flush(); don't do this - uart logging will be blocking, especially if Serial not opened
   }
 
   if (level <= config.logLevelWeb) {
