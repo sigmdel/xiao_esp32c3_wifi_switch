@@ -11,7 +11,7 @@ void wifiLogStatus(void) {
     addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("Connected to WiFi network %s as %s"),
         WiFi.SSID().c_str(), WiFi.localIP().toString().c_str());
   else
-    addToLogP(LOG_INFO, TAG_COMMAND, PSTR("Not connected a WiFi network"));
+    addToLogP(LOG_INFO, TAG_COMMAND, PSTR("Not connected to a WiFi network"));
 }
 
 void wifiConnect() {
