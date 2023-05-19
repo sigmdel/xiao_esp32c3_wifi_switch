@@ -41,7 +41,7 @@ AsyncEventSource events("/events");
 
 void setup() {
   Serial.begin();   // ESP_LOGx use Serial, so a 2 second delay
-  delay(2000);      // should be sufficient for USB serial to be up
+  delay(2000);      // should be sufficient for USB serial to be up if connected
 
   // Connect to the Wi-Fi network, credentials in "secrets.h"
   ESP_LOGI(TAG, "Connecting to %s", ssid);
