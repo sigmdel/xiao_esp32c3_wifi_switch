@@ -54,17 +54,13 @@ void testLogModule(void) {
 
 void setup() {
   addToLogPf(LOG_INFO, TAG_SYSTEM, PSTR("Firmware version %s"), FirmwareVersionToString().c_str());
-  // need to add firmware version
-  addToLogP(LOG_INFO, TAG_SYSTEM, PSTR("Starting setup()"));
-
-  Serial.begin();   // ESP_LOGx use Serial, so a 2 second delay
-  delay(2000);      // should be sufficient for USB serial to be up
-
+  addToLogP(LOG_DEBUG, TAG_SYSTEM, PSTR("Starting setup()"));
+  Serial.begin();
+  delay(2000); // should be sufficient for USB serial to be up if connected
   loadConfig();
-
   // Connect to the Wi-Fi network
-  WiFi.disconnect();
   WiFi.mode(WIFI_STA);
+  WiFi.setAutoReconnect(true);
   wifiConnected = false;
   connectiontime = millis();
   #ifdef USE_SECRETS
@@ -76,8 +72,7 @@ void setup() {
   #endif
   webserversetup();
   initHardware();
-
-  addToLogP(LOG_INFO, TAG_SYSTEM, PSTR("Completed setup(), starting loop()"));
+  addToLogP(LOG_DEBUG, TAG_SYSTEM, PSTR("Completed setup(), starting loop()"));
 }
 
 void loop() {
