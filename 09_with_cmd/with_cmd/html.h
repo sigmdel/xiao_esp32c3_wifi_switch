@@ -239,7 +239,7 @@ const char html_console[] PROGMEM = R"rawliteral(
       ta.scrollTop = ta.scrollHeight;
       }, false);
     }
- </script
+ </script>
 </body>
 </html>)rawliteral";
 
