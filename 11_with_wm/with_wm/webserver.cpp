@@ -64,7 +64,6 @@ String processor2(const String& var){
 
 void webserversetup(void) {
   addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("Adding HTTP request handlers"));
-  // Setup async web browser
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     addToLogP(LOG_INFO, TAG_WEBSERVER, PSTR("GET /"));
