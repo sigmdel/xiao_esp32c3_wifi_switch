@@ -2,7 +2,6 @@
 #include "logging.h"
 #include "version.h"
 #include "config.h"
-#include "user_config.h"
 #include "wifiutils.hpp"
 #include "commands.hpp"
 
@@ -767,10 +766,8 @@ cmndError_t doTime(int count, int &errIndex) {
   long aTime;
 
   if ((count > 1) and token[1].equals("-d")) {
-    config.dmtzReqTimeout = DMTZ_TIMEOUT;
-    config.hdwPollTime = HDW_POLL_TIME;
-    config.sensorUpdtTime = SENSOR_UPDT_TIME;
-        if (count > 2)  {
+    defaultTimes();
+    if (count > 2)  {
       errIndex = 2;
       return etExtraParam;
     }
