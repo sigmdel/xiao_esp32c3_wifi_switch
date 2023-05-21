@@ -14,7 +14,7 @@ struct config_t {
   uint16_t magic;                 // check for valid config
 
   char hostname[HOSTNAME_SZ];     // up to 54 character host name
-  char syslogHost[URL_SZ];        // URL of Syslog server
+  char syslogHost[IP_SZ];         // Static IP of Syslog server (must be IPv4)
   uint16_t syslogPort;            // Syslog port
 
   uint16_t hdwPollTime;           // Interval between hardware polling (ms)

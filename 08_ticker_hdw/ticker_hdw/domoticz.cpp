@@ -37,7 +37,7 @@ bool sendHttpRequest(String url) {
   addToLogPf(LOG_DEBUG, TAG_DOMOTICZ, PSTR("HTTP request URL: %s"), url.c_str());
   HTTPClient http;
   http.setConnectTimeout(CONNECT_TIMEOUT);
-  bool ok =http.begin(url.c_str()); // returns false when HTTPClient::beginInternal finds syntax error in url
+  bool ok = http.begin(url.c_str()); // returns false when HTTPClient::beginInternal finds syntax error in url
   if (!ok) {
     http.end();
     addToLogP(LOG_ERR, TAG_DOMOTICZ, PSTR("Domoticz update failed: url invalid"));
