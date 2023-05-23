@@ -1,9 +1,0 @@
-# .hgignore
-#
-
-syntax: glob
-
-.pio
-.vscode
-*zip
-secrets.h
