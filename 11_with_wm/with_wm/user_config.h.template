@@ -32,6 +32,7 @@
 #define DMTZ_USER        ""
 #define DMTZ_PSWD        ""
 
+//--- Default Domoticz virtual sensor id
 #define DMTZ_SWITCH_IDX  1
 #define DMTZ_THS_IDX     2
 #define DMTZ_LS_IDX      3
