@@ -155,6 +155,7 @@ and modifying the `time` command by inserting the `ap` parameter to set the disc
 
 The corresponding fields had to be added to the configuration structure `config_t`. Also, three Web pages were added in `html.h` not just one and two functions were appended to `wifiutils` to start and stop the access point. Starting and stopping the access point is done in the `WiFiModule` in `main.cpp`.
 
+
 When connected to the wireless network started by the Wi-Fi switch, it is possible to get access to the main Web page at `192.168.4.1/index.html` (or whatever the AP's IP address is). That way, the relay can be turned on or off, the sensor values will be updated and the firmware can be updated. The Wi-Fi switch configuration can also be modified with the Web console. If one prefers to have a completely separate Wi-Fi manager, then look at `webserver_xl/webserver.cpp`.
 
 For some reason, it can be difficult to connect my desktop computer (Linux Mint 20.1 with a 5.15.0-72-generic kernel) to the access point.  Sometimes, turning the radio off, and then back on, can solve that problem.
@@ -166,6 +167,14 @@ $ sudo nmcli radio wifi on
 ```
 
 The `lshw` is used to verify that the interface is actually off. When this trick does not seem to work even after a number of tries, I find that connecting to the home Wi-Fi network, waiting until an IP version 4 address is assigned to the computer Wi-Fi interface and then closing the connection seems to "prime" the wireless interface. If all this fails, then the desktop can be rebooted and it usually does not have problem connecting to the XIAO access point if it is the first wireless network used. That is obviously a tedious method that grows old very quickly. It's all very frustrating but, interestingly, that problem is not encountered when I use Android devices.
+
+The simulated sensors in the alternative hardware driver in  `08_ticker_hdw/hdw_alt/hardware.cpp` has been extracted and moved to a separate file. There are now three different hardware driver:
+
+  - `hdw_kit/hardware.cpp`  that uses the SeeedStudio Start Kit (used by default)
+  - `hdw_alt/hardware.cpp`  that uses generic sensors 
+  - `hdw_mock/hardware.cpp`  that emulates sensors
+
+Just copy the desired driver over the `with_mw/hardware.cpp`.
 
 <!--
 
