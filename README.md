@@ -1,6 +1,6 @@
 # xiao_esp32c3_wifi_switch
 
-***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.7*)
+***XIAO ESP32C3 based Wi-Fi Switch*** (*Version 0.0.8*)
 
 Source code that accompanies **A Wi-Fi Switch for Domoticz using a XIAO ESP32C3:**
 
@@ -207,9 +207,21 @@ michel@hp:~$ ip a
 -->
 
 
-## Upcoming
+## 11_with_mqtt
 
-With version 0.0.7 (11_with_wm), the project has attained a level such that it could be used as is if the Wi-Fi switch can be given a static IP address. This is not always practical, but the alternative, using dynamically assigned IP address, will break the Domoticz on and off actions for the relay when, inevitably, the DHCP server assigns a different IP address to the XIAO. The obvious solution is to communicate with Domoticz through MQTT messaging. So that will be the next step.
+This latest (and last?) version  adds MQTT functionality. Most of the work is done in the `mqtt` module, but changes to other modules were made. The `domoticz` module now communicates with the Domoticz server using MQTT messages. If it cannot connect to the MQTT server, it will update the Domoticz database using HTTP requests as before. Along the same line, it is not necessary to remove On and Off actions of the virtual light device that used HTTP requests to have the Wi-Fi switch turn on or off the relay. This can be seen as a backup of the MQTT channel. The MQTT log facility was added to `logging`. Four MQTT topics were added as user-settable values in `config`. Two are the Domoitcz in and out topics, a third is the topic used for the log and the fourth is the subscription topic for commands. All commands that can be entered in the Web console or through the serial interface can be sent as the payload of an mqtt message.
+
+The access point is entirely managed within the `wifiutils` unit.
+
+The `espRestart` function in `main.cpp` has been revamped. Currently 8 restart modes are defined. This is much too granular and will probably be reduced in the future after some testing. Currently, long button presses can initiate one of three restart modes.
+
+|time press (seconds) | restart level | actions before actual restart |
+|---|---|---|
+| greater than 30 | 7 | restore the default config, then sets dynamic IP, clears wifi credentials, saves config |
+| between 10 and 30 | 3 |  sets dynamic IP, saves the configuration |
+| between 0.75 and 10 | 0 |  saves the configuration if it has been changed|
+
+Preliminary tests show that the source code can generate working firmware for ESP32-S2 based devices. That is another single core microcontroller. It uses the Xtensa LX7 microprocessor which makes the ESP32-S2 closer to the ESP8266 than the ESP32-C3. The `platformio.ini` shows the settings used for the AI-Thinker nodeMCU ESP-32H dev kit which is rather more finicky than the XIAO ESP32C3.
 
 ## License
 
