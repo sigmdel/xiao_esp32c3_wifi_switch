@@ -1,0 +1,64 @@
+#pragma once
+
+#include "logging.h" // for log levels
+
+// default configuration
+
+#define HOSTNAME         "kitchenlight"
+#define DEVICENAME       "Kitchen Light"
+
+//--- Default Wi-Fi network credentials
+#define WIFI_SSID         "MY_WIFI_NETWORK_NAME"
+#define WIFI_PSWD         "MY_WIFI_NETWORK_PASSWORD"
+
+//--- Default static IP data
+#define STA_STATIC_IP    "0.0.0.0"       // "0.0.0.0" means this device will get dynamic (dhcp) IP address
+#define STA_GATEWAY      "192.168.1.1"
+#define STA_NETMASK      "255.255.255.0"
+
+//--- Default access point data
+#define AP_SUFFIX        "AP"            // ap Name (SSID) = hostname-suffix
+#define AP_PSWD          "12345678"      // no password can cause problems
+#define AP_IP            ""              // default i.e. "192.168.4.1"
+#define AP_MASK          ""              // default i.e. "255.255.255.0"
+
+//--- Default Syslog config data
+#define SYSLOG_HOST      "192.168.1.22"  // must be an IP address
+#define SYSLOG_PORT      514
+
+//--- Default Dommoticz server data
+#define DMTZ_HOST       "192.168.1.22"
+#define DMTZ_PORT        8080
+#define DMTZ_USER        ""
+#define DMTZ_PSWD        ""
+
+//--- Default Domoticz virtual sensor id
+#define DMTZ_SWITCH_IDX  1
+#define DMTZ_THS_IDX     2
+#define DMTZ_LS_IDX      3
+#define DMTZ_TIMEOUT     5000   // default HTTPCLIENT_DEFAULT_TCP_TIMEOUT = 5000 (5 seconds)
+                                // must be set in multiples of 1000 ms
+
+//--- Default Domoticz MQTT topics
+#define DMTZ_PUB_TOPIC  "domoticz/in"   // case sensitive
+#define DMTZ_SUB_TOPIC  "domoticz/out"  // case sensitive
+#define MQTT_LOG_TOPIC  "%h%/log"       // %h% placeholder for hostname
+#define MQTT_CMD_TOPIC  "%h%/cmd"       // %h% placeholder for hostname
+
+//--- Default MQTT broker data  // not yet implemented
+#define MQTT_HOST       "192.168.1.22"
+#define MQTT_PORT        1883
+#define MQTT_USER        ""
+#define MQTT_PSWD        ""
+#define MQTT_BUFFER_SIZE 768
+
+//--- Default hardware timing
+#define HDW_POLL_TIME    25       //25 ms, 50ms probably fast enough
+#define SENSOR_UPDT_TIME 240000   //4 minutes
+#define AP_DELAY_TIME    300000   //5 minutes
+
+//--- Default Log levels
+#define LOG_LEVEL_UART    LOG_DEBUG
+#define LOG_LEVEL_SYSLOG  LOG_INFO
+#define LOG_LEVEL_WEBC    LOG_INFO
+#define LOG_LEVEL_MQTT    LOG_ERR     // not yet implemented
