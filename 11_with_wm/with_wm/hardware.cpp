@@ -1,32 +1,34 @@
+//--- Hardware Configuration when Using Seeed Studio XIAO Starter Kit ---
+
+// Relay (light)
+#define RELAY_PIN   10 // (D10) Grove LED Socket kit in lieu relay, connected to XIAO female headers on XIAO Expansion base
+
+// Push button
+#define BUTTON_PIN  3  // (D1) User button on XIAO Expansion base
+
+// Brightness sensor
+#define LS_PIN      2  // (D0) Grove Light Sensor v1.2 connected to XIA0 Expansion base A0-D0 connector
+
+// Grove DHT20 Temperature and Humidity sensor connected to I²C Grove connector on XIAO Expansion base
+// Uses the default I²C pins: SDA = D4 = 6 and SCL = D5 = 7
+
+//--------------------------------
+
 #include "arduino_config.h"  // done with build_flags in platformIO
 #include <Arduino.h>
 #include <Ticker.h>
 #include "ESPAsyncWebServer.h"  // for AsyncEventSource
 #include "mdSimpleButton.h"
 #include "DFRobot_DHT20.h"      // modified
-#include "logging.h"
 #include "config.h"
+#include "logging.h"
 #include "hardware.h"
 #include "domoticz.h"
 
-#define TEST_THS_FAIL  // assume THS failure is being tested
 
-#ifdef NO_TESTS
-  // remove all test modules
-  #undef TEST_THS_FAIL
+#ifndef NO_TESTS
+  #define TEST_THS_FAIL  // test temperature & humidity sensor
 #endif
-
-// Relay (light)
-#define RELAY_PIN   D10 // Grove RELAY Socket kit connected to XIAO female headers on XIAO Expansion base
-
-// Push button
-#define BUTTON_PIN  D1  // User button on XIAO Expansion base
-
-// Brightness sensor
-#define LS_PIN      D0  //  connected to XIA0 Expansion base A0-D0 Grove connector
-
-// DHT20 uses the default I²C pins: SDA = D4 = 6 and SCL = D5 = 7
-
 
 extern AsyncEventSource events;
 
@@ -54,13 +56,15 @@ void initRelay(void) {
 
 // Button
 
+extern void espRestart(void);
+
 mdSimpleButton button = mdSimpleButton(BUTTON_PIN);
 
 void checkButton(void) {
   switch( button.update()) {
     case BUTTON_LONGPRESS:
-      addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Push-button long press"));
-      esp_restart();
+      addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Push-button long press - restart"));
+      espRestart();
       break;
     case BUTTON_RELEASED:
       addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Push-button released"));
@@ -104,7 +108,7 @@ void initSensor() {
 void readTemp(void) {
   if (!hasTempSensor) return;
   if (millis() - temptime > config.sensorUpdtTime) {
-    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR( "Reading temperature and humidity data"));
+    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR( "Reading temperature and humidity data"));
     TempAndHumidity_t tah = dht20.getTempAndHumidity();
     addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Temperature %s --> %.1f"), Temperature.c_str(), tah.temperature);
     Temperature = String(tah.temperature, 1);
@@ -114,10 +118,9 @@ void readTemp(void) {
     events.send(Temperature.c_str(),"tempvalue");        // updates all Web clients
     events.send(Humidity.c_str(),"humdvalue");           // and Domoticz
     updateDomoticzTemperatureHumiditySensor(config.dmtzTHSIdx, tah.temperature, 100*tah.humidity);
-    addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Temperature and humidity data updated"));
+    addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Temperature and humidity data updated"));
   }
 }
-
 
 
 // Brightness Sensor
@@ -130,7 +133,7 @@ void initBrightness(void) {
 
 void readBrightness() {
   if (millis() - brightnesstime >= config.sensorUpdtTime) {
-    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading light data"));
+    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading brightness sensor value"));
     uint32_t mvolt = analogReadMilliVolts(LS_PIN);
     int value = map(mvolt, 0, 3300, 0, 100);
     addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Brightness %s --> %d"), Brightness.c_str(), value);
@@ -141,7 +144,6 @@ void readBrightness() {
     addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Brightness data updated"));
   }
 }
-
 
 void checkHardware(void) {
   checkButton();
