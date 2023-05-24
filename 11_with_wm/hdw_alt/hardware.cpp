@@ -40,6 +40,7 @@
 
 #ifndef NO_TESTS
   #define TEST_THS_FAIL  // test temperature & humidity sensor
+  #define DEBUG_LS_FIFO  // generates a lot of debug messages
 #endif
 
 extern AsyncEventSource events;
