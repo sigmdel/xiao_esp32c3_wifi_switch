@@ -7,7 +7,7 @@ Source code that accompanies **A Wi-Fi Switch for Domoticz using a XIAO ESP32C3:
    + [*Part 1 - Demonstration Projects*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)
    + [*Part 2 - Asynchronious Web Page Updates*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html)
    + *Part 3 - Better User Experience...* 
-   + [*Part 4 - Commands - version 0.0.7*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_4_en.html)
+   + [*Part 4 - Commands - version 0.0.8*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_4_en.html)
 
 ## Overview of the Wi-Fi Switch
 
