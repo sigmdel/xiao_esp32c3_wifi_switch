@@ -176,37 +176,6 @@ The simulated sensors in the alternative hardware driver in  `08_ticker_hdw/hdw_
 
 Just copy the desired driver over the `with_mw/hardware.cpp`.
 
-<!--
-
-```
-michel@hp:~$ ip a
-...
-5: wlp5s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether bb:cc:dd:00:11:22 brd ff:ff:ff:ff:ff:ff
-    inet6 abcd::4567:3456:2345:bcde/64 scope link noprefixroute 
-       valid_lft forever preferred_lft forever
-...       
-michel@hp:~$ ip a
-...
-5: wlp5s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether bb:cc:dd:00:11:22 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.10.106/24 brd 192.168.10.255 scope global dynamic noprefixroute wlp5s0
-       valid_lft 259194sec preferred_lft 259194sec
-    inet6 abcd::4567:3456:2345:bcde/64 scope link noprefixroute 
-       valid_lft forever preferred_lft forever
-```
-
-```
-michel@hp:~$ ip a
-...
-5: wlp5s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether bb:cc:dd:00:11:22 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.4.2/24 brd 192.168.4.255 scope global dynamic noprefixroute wlp5s0
-       valid_lft 259194sec preferred_lft 259194sec
-```
--->
-
-
 ## 11_with_mqtt
 
 This latest (and last?) version  adds MQTT functionality. Most of the work is done in the `mqtt` module, but changes to other modules were made. The `domoticz` module now communicates with the Domoticz server using MQTT messages. If it cannot connect to the MQTT server, it will update the Domoticz database using HTTP requests as before. Along the same line, it is not necessary to remove On and Off actions of the virtual light device that used HTTP requests to have the Wi-Fi switch turn on or off the relay. This can be seen as a backup of the MQTT channel. The MQTT log facility was added to `logging`. Four MQTT topics were added as user-settable values in `config`. Two are the Domoitcz in and out topics, a third is the topic used for the log and the fourth is the subscription topic for commands. All commands that can be entered in the Web console or through the serial interface can be sent as the payload of an mqtt message.

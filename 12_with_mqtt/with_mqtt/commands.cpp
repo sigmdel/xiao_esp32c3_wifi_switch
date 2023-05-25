@@ -49,12 +49,12 @@ static const char *params[COMMAND_COUNT] = {
   /* log     */ "[-d] | [(uart|mqtt|syslog|webc) [ERR|inf|dbg|<level>]]",
   /* mqtt    */ "[-d] | [[<host> [<port>]] ( [-x] | [-c <user> <pswd>]] )",
   /* name    */ "[-d] | [-h [<hostname>]] | [-n [<device name>]]",
-  /* restart */ "[[0|1|2]",
+  /* restart */ "[[0|1|...|7]",
   /* staip   */ "[-d|-x] | [<ip> <gateway> <mask>]",
   /* status  */  "",
   /* syslog  */ "[-d] | [<hostIP> [<port>]]",
   /* time    */ "[-d] | [(poll|update|http|ap) [<ms>]]",
-  /* topic   */ "[-d] | [(in|out|log|cmd) [<topic>]]",
+  /* topic   */ "[-d] | [(log|cmd|pub|sub) [<topic>]]",
   /* wifi    */ "[-d] | [<ssid> [<pswd]]"
 };
 
@@ -891,9 +891,9 @@ cmndError_t doTime(int count, int &errIndex) {
 
 
 
-//   1    2    3            2            3         4 <<< count
-//   0    1    2            1            2         3 <<< errIndex
-// topic [-d] xtra1 | [(log|pub|sub) [<topic>]]  xtra2
+//   1    2    3               2            3         4 <<< count
+//   0    1    2               1            2         3 <<< errIndex
+// topic [-d] xtra1 | [(log|cmd|pub|sub) [<topic>]]  xtra2
 //
 void showTopics(void) {
   addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("MQTT topics: log = \"%s\", cmd = \"%s\", Domoticz pub = \"%s\" and sub = \"%s\""),
