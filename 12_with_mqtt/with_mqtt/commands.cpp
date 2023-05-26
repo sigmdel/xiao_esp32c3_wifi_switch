@@ -12,10 +12,10 @@
 enum cmndError_t {etNone, etMissingParam, etUnknownCommand, etUnknownParam, etExtraParam, etInvalidValue};
 
 static const char *cmdsrc[] = {
-/* FROM_BTTN */  "bttn",
 /* FROM_UART */  "uart",
-/* FROM_MQTT */  "mqtt",
-/* FROW_WEBC */  "webc"};
+/* FROW_WEBC */  "webc",
+/* FROM_MQTT */  "mqtt"
+};
 
 static const char* cmds[] = {
   "ap",             // - manage access point

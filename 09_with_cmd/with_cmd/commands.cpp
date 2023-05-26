@@ -2,18 +2,18 @@
 #include "logging.h"
 #include "version.h"
 #include "config.h"
-#include "user_config.h"
 #include "commands.hpp"
 
 // BUG - it is possible that strlcpy could truncate !!!
 //   see: https://en.wikibooks.org/wiki/C_Programming/C_Reference/nonstandard/strlcpy#Criticism
 
+enum cmndError_t {etNone, etMissingParam, etUnknownCommand, etUnknownParam, etExtraParam, etInvalidValue};
 
 static const char *cmdsrc[] = {
-/* FROM_BTTN */  "bttn",
 /* FROM_UART */  "uart",
-/* FROM_MQTT */  "mqtt",
-/* FROW_WEBC */  "webc"};
+/* FROW_WEBC */  "webc",
+/* FROM_MQTT */  "mqtt"
+};
 
 static const char* cmds[] = {
   "config",         //  0 - manage configuration
@@ -620,10 +620,8 @@ cmndError_t doTime(int count, int &errIndex) {
   long aTime;
 
   if ((count > 1) and token[1].equals("-d")) {
-    config.dmtzReqTimeout = DMTZ_TIMEOUT;
-    config.hdwPollTime = HDW_POLL_TIME;
-    config.sensorUpdtTime = SENSOR_UPDT_TIME;
-        if (count > 2)  {
+    defaultTimes();
+    if (count > 2)  {
       errIndex = 2;
       return etExtraParam;
     }
