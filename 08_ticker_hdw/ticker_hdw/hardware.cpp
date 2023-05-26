@@ -1,3 +1,18 @@
+//--- Hardware configuration ---
+
+// Relay (light)
+#define RELAY_PIN   D10 // Grove RELAY Socket kit connected to XIAO female headers on XIAO Expansion base
+
+// Push button
+#define BUTTON_PIN  D1  // User button on XIAO Expansion base
+
+// Brightness sensor
+#define LS_PIN      D0  //  connected to XIA0 Expansion base A0-D0 Grove connector
+
+// DHT20 uses the default I²C pins: SDA = D4 = 6 and SCL = D5 = 7
+
+//--------------------------------
+
 #include "arduino_config.h"  // done with build_flags in platformIO
 #include <Arduino.h>
 #include <Ticker.h>
@@ -15,18 +30,6 @@
   // remove all test modules
   #undef TEST_THS_FAIL
 #endif
-
-// Relay (light)
-#define RELAY_PIN   D10 // Grove RELAY Socket kit connected to XIAO female headers on XIAO Expansion base
-
-// Push button
-#define BUTTON_PIN  D1  // User button on XIAO Expansion base
-
-// Brightness sensor
-#define LS_PIN      D0  //  connected to XIA0 Expansion base A0-D0 Grove connector
-
-// DHT20 uses the default I²C pins: SDA = D4 = 6 and SCL = D5 = 7
-
 
 extern AsyncEventSource events;
 
@@ -131,7 +134,7 @@ void initBrightness(void) {
 
 void readBrightness() {
   if (millis() - brightnesstime >= config.sensorUpdtTime) {
-    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading light data"));
+    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading brightness sensor value"));
     uint32_t mvolt = analogReadMilliVolts(LS_PIN);
     int value = map(mvolt, 0, 3300, 0, 100);
     addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Brightness %s --> %d"), Brightness.c_str(), value);

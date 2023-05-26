@@ -133,7 +133,7 @@ void initSensor() {
 void readTemp(void) {
   if (!hasTempSensor) return;
   if (millis() - temptime > config.sensorUpdtTime) {
-    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR( "Reading temperature and humidity data"));
+    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR( "Reading temperature and humidity data"));
     float temp = Temperature.toFloat() + (float) (random(100)-50)/60;
     addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Temperature %s --> %.1f"), Temperature.c_str(), temp);
     Temperature = String(temp, 1);
@@ -144,7 +144,7 @@ void readTemp(void) {
     events.send(Temperature.c_str(),"tempvalue");        // updates all Web clients
     events.send(Humidity.c_str(),"humdvalue");           // and Domoticz
     updateDomoticzTemperatureHumiditySensor(TEMP_HUMI_IDX, temp, humid);
-    addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Temperature and humidity data updated"));
+    addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Temperature and humidity data updated"));
   }
 }
 #endif // THS == MOCK
@@ -178,7 +178,7 @@ void initSensor() {
 void readTemp(void) {
   if (!hasTempSensor) return;
   if (millis() - temptime > config.sensorUpdtTime) {
-    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR( "Reading temperature and humidity data"));
+    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR( "Reading temperature and humidity data"));
     TempAndHumidity_t tah = dht20.getTempAndHumidity();
     addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Temperature %s --> %.1f"), Temperature.c_str(), tah.temperature);
     Temperature = String(tah.temperature, 1);
@@ -188,7 +188,7 @@ void readTemp(void) {
     events.send(Temperature.c_str(),"tempvalue");        // updates all Web clients
     events.send(Humidity.c_str(),"humdvalue");           // and Domoticz
     updateDomoticzTemperatureHumiditySensor(TEMP_HUMI_IDX, tah.temperature, 100*tah.humidity);
-    addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Temperature and humidity data updated"));
+    addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Temperature and humidity data updated"));
   }
 }
 
@@ -230,7 +230,7 @@ void initSensor() {
 
 void readTemp(void) {
   if (millis() - temptime > config.sensorUpdtTime) {
-    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading temperature and humidity data"));
+    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading temperature and humidity data"));
     // read without samples.
     float temperature = 0;
     float humidity = 0;
@@ -252,7 +252,7 @@ void readTemp(void) {
       events.send(Temperature.c_str(), "tempvalue");        // updates all Web clients
       events.send(Humidity.c_str(), "humdvalue");           // and Domoticz
       updateDomoticzTemperatureHumiditySensor(TEMP_HUMI_IDX, temperature, humidity);
-      addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Temperature and humidity data updated"));
+      addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Temperature and humidity data updated"));
   }
     temptime = millis();
   }
@@ -260,7 +260,7 @@ void readTemp(void) {
 
 #endif // THS == DHT11 or THS == DHT22
 
-// Light Sensor
+// Brightness Sensor
 
 unsigned long brightnesstime = 0;
 
@@ -286,7 +286,7 @@ void initBrightness(void) {
 
 void readBrightness(void) {
   if (millis() - brightnesstime >= config.sensorUpdtTime) {
-    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading light sensor value"));
+    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading brightness sensor data"));
     BrightnessValue += runDir;
     if (BrightnessValue > 98)
       BrightnessValue = 90;
@@ -300,7 +300,7 @@ void readBrightness(void) {
     brightnesstime = millis();
     events.send(Brightness.c_str(),"brightvalue");            // updates all Web clients
     updateDomoticzBrightnessSensor(LUX_IDX, BrightnessValue); // and Domoticz
-    addToLogPf(LOG_INFO, TAG_HARDWARE, PSTR("Brightness data updated"));
+    addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Brightness data updated"));
   }
 }
 
@@ -338,7 +338,7 @@ uint32_t addlsValue(uint32_t newValue) {
 
 void readBrightness() {
   if (millis() - lightreadtime >= LS_READ) {
-    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading light sensor."));
+    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading brightness sensor data"));
     uint32_t mvolt = analogReadMilliVolts(LS_PIN);
     lsAvg = addlsValue(mvolt);
     addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Raw light value: %d, avg: %d"), mvolt, lsAvg);
@@ -365,7 +365,7 @@ void readBrightness() {
 
 void readBrightness() {
   if (millis() - brightnesstime >= config.sensorUpdtTime) {
-    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading light sensor value"));
+    addToLogP(LOG_DEBUG, TAG_HARDWARE, PSTR("Reading brightness sensor data"));
     uint32_t mvolt = analogReadMilliVolts(LS_PIN);
     #if (LS==LS_LDR)
     int value = map(mvolt, 0, 3300, 100, 0);

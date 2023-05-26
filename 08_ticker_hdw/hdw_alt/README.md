@@ -25,9 +25,9 @@ Use the
 ```cpp
 #define LS XXXX
 ```
-macro to specify which sensor is used. If `MOCK` is specified, light level sensor will be emulated.
+macro to specify which sensor is used. If `MOCK` is specified, a brightness sensor will be emulated.
 
-## Light reading averaging
+## Brightness reading averaging
 
 The macro
 ```cpp
