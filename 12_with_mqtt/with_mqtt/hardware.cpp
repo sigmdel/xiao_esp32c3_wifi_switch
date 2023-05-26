@@ -56,15 +56,23 @@ void initRelay(void) {
 
 // Button
 
-extern void espRestart(void);
+extern void espRestart(int level = 0);
 
 mdSimpleButton button = mdSimpleButton(BUTTON_PIN);
 
 void checkButton(void) {
   switch( button.update()) {
     case BUTTON_LONGPRESS:
-      addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Push-button long press - restart"));
-      espRestart();
+      if (button.presstime > 30000) { // more than 30 seconds
+        addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Push-button long press - restart 7"));
+        espRestart(7);
+      } else if (button.presstime > 10000) { // more than 10 seconds
+        addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Push-button long press - restart 3"));
+        espRestart(3);
+      } else {
+        addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Push-button long press - restart 0"));
+        espRestart(0);
+      }
       break;
     case BUTTON_RELEASED:
       addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Push-button released"));

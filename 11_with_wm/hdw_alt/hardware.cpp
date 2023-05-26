@@ -93,12 +93,6 @@ bool hasTempSensor = false;
 
 
 #ifdef TEST_THS_FAIL
-DFRobot_DHT20 dht20(&Wire, 0x43);  // invalid I2C address
-#else
-DFRobot_DHT20 dht20;
-#endif
-
-#ifdef TEST_THS_FAIL
 #undef THS_PIN
 #define THS_PIN -1
 #endif
