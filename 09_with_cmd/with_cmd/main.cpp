@@ -23,8 +23,6 @@ String inputString;
 boolean stringComplete = false;
 
 void inputModule() {
-  //lwdtStamp(INPUT_MODULE);
-
   if (stringComplete) {
     //addToLogPf(LOG_DEBUG, TAG_COMMAND, PSTR("Serial command: \"%s\""), inputString.c_str());
     //doCommand(FROM_UART, inputString.c_str());
