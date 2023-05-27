@@ -6,8 +6,10 @@ Source code that accompanies **A Wi-Fi Switch for Domoticz using a XIAO ESP32C3:
 
    + [*Part 1 - Demonstration Projects*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html)
    + [*Part 2 - Asynchronious Web Page Updates*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_2_en.html)
-   + *Part 3 - Better User Experience...* 
+   + [*Part 3 - Better User Experience...*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_3_en.html)
    + [*Part 4 - Commands - version 0.0.8*](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_4_en.html)
+
+  + *Part 5 - Wi-Fi Manager* - (forthcoming)
 
 ## Overview of the Wi-Fi Switch
 
@@ -26,9 +28,32 @@ All projects are independent and self-contained.
 
 Private copies of the needed libraries are provided in the shared [`libraries`](libraries) directory, so it should be possible to compile all the projects without installing any library.
 
-All projects will compile and run in the PlatformIO and Arduino IDEs as long as the ESP32 platform in installed and the correct board is selected. Details are in section 6 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html#compile1). 
+All projects will compile and run in the PlatformIO and Arduino IDEs as long as the ESP32 platform in installed and the correct board is selected.  In the Arduino IDE it will be necessary to specify the *Sketchbook location* in the IDE *Preferences* in order to use the private copies of the libraries. Details are in section 6 of [A Wi-Fi Switch for Domoticz using a XIAO ESP32C3 - Part 1](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_wifi_switch_1_en.html#compile1). 
 
- 
+## Impatient?
+
+Just want to test-drive the latest version? Follow these steps:
+
+  1. Download the `xiao_esp32c3_wifi_switch.zip` archive from the current release
+  2. Extract the `xiao_esp32c3_wifi_switch-master` directory on a drive. Let's call the full path to this directory `project_dir`. 
+  3. Copy the appropriate hardware driver, `hardware.cpp` from `project_dir/xiao_esp32c3/hdw_xxx/hardware.cpp` -where '`xxx` is `alt`, `kit`, or `mock`) to  `project_dir/xiao_esp32c3/wifi_switch/hardware.cpp`.
+  4. Edit the pin definitions in `project_dir/xiao_esp32c3/wifi_switch/hardware.cpp` if necessary.
+  5. Edit the default values in `project_dir/xiao_esp32c3/wifi_switch/user_config.h_template` and save as `project_dir/xiao_esp32c3/wifi_switch/user_config.h`. 
+  6. If using the Arduino IDE:
+      1. set *Preferences' Sketchbook location* to `project_dir/xiao_esp32c3/`.
+      2. open the `project_dir/xiao_esp32c3/wifi_switch/wifi_switch.ino` sketch.
+      3. make sure the `ESP32 by Espressif` boards definition is installed with the Boards manager.
+      4. select the XIAO_ESP32C3 board.
+      5. select the appropriate port.
+      6. compile and upload the sketch.
+      7. open the serial monitor and view the log messages to find the IP address of the XIAO.
+
+  7. If using PlatformIO:
+      1. open the `project_dir/xiao_esp32c3/` project. 
+      2. compile and upload the project.
+
+Good luck.
+
 ### Opening a project in PlatformIO
 
 Open a PlatformIO project by clicking on the Quick Access `Open Project` button in the Home page of PlatformIO. Then navigate to the project directory (such as `01_simplified_hdw_version`) which contains the project configuration file `platformio.ini` and click on the `Open "&lt;project&nbsp;name&gt;".
