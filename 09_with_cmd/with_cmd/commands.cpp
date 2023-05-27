@@ -122,7 +122,6 @@ cmndError_t doDmtz(int count, int &errIndex) {
   //bool restartAP = false;
   int c_index = 0;
   errIndex = 0;
-  cmndError_t errCode = etNone;
 
   if ((count > 1) && token[1].equals("-d")) {
     defaultDmtz();
@@ -368,7 +367,6 @@ cmndError_t doMqtt(int count, int &errIndex) {
   //bool restartAP = false;
   int c_index = 0;
   errIndex = 0;
-  cmndError_t errCode = etNone;
 
   if ((count > 1) && token[1].equals("-d")) {
     defaultMqtt();

@@ -133,7 +133,6 @@ void saveConfig(bool force) {
 
 bool loadConfigFromNVS(void) {
   preferences.begin("md", true); // open read-only
-  //config.checksum = getConfigHash();
   size_t len = preferences.getBytes("config", (void*) &config, sizeof(config_t));
   preferences.end();
   if (len == sizeof(config_t))
