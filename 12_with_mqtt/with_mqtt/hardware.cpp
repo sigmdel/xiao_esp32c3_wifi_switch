@@ -35,8 +35,6 @@ extern AsyncEventSource events;
 // Relay
 
 void setRelay(int value) {
-  add
-void setRelay(int value) {
   if (value) value = 1; // defensive
   if (digitalRead(RELAY_PIN) != value) {
     // avoid loops when Domoticz MQTT Hardware Prevent Loop is set to False
