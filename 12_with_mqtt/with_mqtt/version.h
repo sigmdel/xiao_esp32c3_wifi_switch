@@ -2,38 +2,43 @@
 
 #include <Arduino.h>
 
-/*
-    Major: Versions of the firmware with different major versions are not interchangeable.
-           A higher version number indicates a major rewrite where backward compatibility
-           cannot be assumed.
+#define VERSION "0.0.8"
 
-    Minor: If the major version number is the same but the but the minor version number is
-           different, this indicates significant change but backward compatibility is
-           guaranteed.
+struct Version_t {
+public:
+  u_int major, minor, patch;
 
-    Build: Assemblies with the same major, and minor version numbers but different build number
-              should be fully interchangeable. A higher build number might be used when fixing a
-              bug.
+    // Default constructor which sets the
+    // version to 0.0.0
+  Version_t() {};
 
-  https://docs.microsoft.com/en-us/dotnet/api/system.version.-ctor?view=net-6.0
-*/
+    // Constructor with major.minor.patch string.
+    // See fromString
+  Version_t(String value);
 
-// NOTE: Do not forget to do a clean build to update the build date returned by FirmwareVersionToString()
+    // Sets the version numbers from the value string. It should be
+    // formated as a dot separated major.minor.patch integers such as
+    // Version_t Version("1.2.9");
+    //
+  void fromString(String value);
 
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 0
-#define VERSION_BUILD 8
+    // Returns the current version number as a dot separated string
+  String toString();
 
-union Version_t {
-  uint8_t Data[3];
-  uint32_t Version;
+    // Used to test if a newer version is available
+    // Version_t Version("0.1.8");
+    // Version_t OtherVersion(someString);
+    // if Version<OtherVersion { update to OtherVersion }
+    //
+  bool operator<(const Version_t &otherVersion);
 };
 
-// returns aVersion as a string. Example: "0.8.12"
-String VersionToString(Version_t aVersion);
+// Current firmware version set from VERSION
+//   Version.toString() returns the version as a String
+//   Version.toString().c_str() return the version as a C string
+extern Version_t Version;
 
-// returns firmwareVersion as a string with build data: Example "1.9.2 (Apr 26 2023 16:53:40)"
-String FirmwareVersionToString(void);
 
-
-extern Version_t firmwareVersion;
+// Returns Version + build date as a string: Example "1.9.2 (Apr 26 2023 16:53:40)"
+// NOTE: Do not forget to do a clean build to update the build date returned by FirmwareVersion()
+String FirmwareVersion(void);

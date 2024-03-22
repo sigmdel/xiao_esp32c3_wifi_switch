@@ -89,7 +89,7 @@ void inputModule() {
 }
 
 void setup() {
-  addToLogPf(LOG_INFO, TAG_SYSTEM, PSTR("Firmware version %s"), FirmwareVersionToString().c_str());
+  addToLogPf(LOG_INFO, TAG_SYSTEM, PSTR("Firmware version %s"), FirmwareVersion().c_str());
   addToLogP(LOG_DEBUG, TAG_SYSTEM, PSTR("Starting setup()"));
 
 #ifdef SERIAL_BAUD

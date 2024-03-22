@@ -765,7 +765,7 @@ cmndError_t doStaip(int count, int &errIndex) {
 //  status  extra
 //
 cmndError_t doStatus(int count, int &errIndex) {
-  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("%s version %s"), APP_NAME, FirmwareVersionToString().c_str());
+  addToLogPf(LOG_INFO, TAG_COMMAND, PSTR("%s version %s"), APP_NAME, FirmwareVersion().c_str());
   wifiLogStatus();
   mqttLogStatus();
   if (count > 1)  {
