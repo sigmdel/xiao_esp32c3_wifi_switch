@@ -35,13 +35,17 @@ extern AsyncEventSource events;
 // Relay
 
 void setRelay(int value) {
-  addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Set relay to %d"), value);
-  digitalWrite(RELAY_PIN, value);
-  RelayState = (value ? "ON" : "OFF");
-  // tell everyone
-  events.send(RelayState.c_str(),"relaystate");        // updates all Web clients
-  updateDomoticzSwitch(config.dmtzSwitchIdx, value);   // and Domoticz
-  addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Relay state updated"));
+  if (value) value = 1; // defensive
+  if (digitalRead(RELAY_PIN) != value) {
+    // avoid loops when Domoticz MQTT Hardware Prevent Loop is set to False
+    addToLogPf(LOG_DEBUG, TAG_HARDWARE, PSTR("Set relay to %d"), value);
+    digitalWrite(RELAY_PIN, value);
+    RelayState = (value ? "ON" : "OFF");
+    // tell everyone
+    events.send(RelayState.c_str(),"relaystate");        // updates all Web clients
+    updateDomoticzSwitch(config.dmtzSwitchIdx, value);   // and Domoticz
+    addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Relay state updated"));
+  }
 }
 
 void toggleRelay(void) {
