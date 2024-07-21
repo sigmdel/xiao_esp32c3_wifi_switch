@@ -672,8 +672,8 @@ extern void espRestart(int level = 0);
 cmndError_t doRestart(int count, int &errIndex) {
   int n = 0;
   if (count > 1) {
-    n = (byte)token[2][0] - '0';
-    if ( (token[2].length()>1)  || (n < 0) ) {
+    n = (byte)token[1][0] - '0';
+    if ( (token[1].length()>1)  || (n < 0) ) {
       errIndex = 1;
       return etInvalidValue;
     }
