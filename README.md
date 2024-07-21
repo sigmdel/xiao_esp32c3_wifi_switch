@@ -169,7 +169,7 @@ Added the <a href="https://github.com/ayushsharma82/AsyncElegantOTA" target="_bl
 
 ## 11_with_wm
 
-A Wi-Fi manager is added. Well, that's a bit pretentious; only an alternate root Web is provided. When the Wi-Fi switch has lost the connection to the wireless network for more than a specified time interval (5 minutes as defined in the default user configuration), it starts an access point. It will be necessary to log onto that new Wi-Fi network, named `KITCHENLIGHT-AP` with `12345678` as a password, to open the Web server to get access to a form used to specify the Wi-Fi credentials and from there try to connect to the Wi-Fi network. As soon as a Wi-Fi connection is established, the access point is brought down.
+A Wi-Fi manager is added. Well, that's a bit pretentious; only an alternate root HTML page is provided. When the Wi-Fi switch has lost the connection to the wireless network for more than a specified time interval (5 minutes as defined in the default user configuration), it starts an access point. It will be necessary to log onto that new Wi-Fi network, named `KITCHENLIGHT-AP` with `12345678` as a password, to open the Web server to get access to a form used to specify the Wi-Fi credentials and from there try to connect to the Wi-Fi network. As soon as a Wi-Fi connection is established, the access point is brought down.
 
 This required adding two new commands 
 
