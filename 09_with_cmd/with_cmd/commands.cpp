@@ -487,7 +487,7 @@ cmndError_t doName(int count, int &errIndex) {
 // restart [n]  xtra2
 //
 cmndError_t doRestart(int count, int &errIndex) {
-  addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Restarting in 1 second"));
+  addToLogP(LOG_INFO, TAG_HARDWARE, PSTR("Restart not implemented"));
   delay(1000); // wait one second
   return etNone; // keep compiler happy
 }
